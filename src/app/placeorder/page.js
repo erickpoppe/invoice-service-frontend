@@ -236,7 +236,7 @@ export default function PlaceOrderScreen() {
 
     const dispatch = useDispatch();
 
-    const [eventId, setEventId] = useState(null);
+    const [eventId, setEventId] = useState('1');
 
     const handleServicioWebNoDisponible = () => {
 
