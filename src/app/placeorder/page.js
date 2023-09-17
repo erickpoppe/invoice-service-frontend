@@ -557,6 +557,7 @@ export default function PlaceOrderScreen() {
                                                         <td className="p-5 text-right">
                                                             <input
                                                                 type="number"
+                                                                min="0"
                                                                 value={discounts[item.id] || ''}
                                                                 onChange={(e) => handleItemDiscountChange(item.id, e.target.value)}
                                                                 placeholder="Discount"
@@ -640,6 +641,7 @@ export default function PlaceOrderScreen() {
                                         <div>
                                             <input
                                                 type="number"
+                                                min="0"
                                                 value={additionalDiscount}
                                                 onChange={(e) => handleAdditionalDiscountChange(e.target.value)}
                                                 placeholder="Descuento Adicional"

@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import Cookies from 'js-cookie'
 
 
@@ -12,25 +12,13 @@ const initialState = Cookies.get('cart')
       paymentMethod: '',
       eventId: null,
       codigoRecepcionEventoSignificativo: null,
+      clientId: null,
 
     }
 
 const addDecimals = (num) => {
   return (Math.round(num * 100) / 100).toFixed(2) // 12.3456 to 12.35
 }
-
-export const storeEventId = createAsyncThunk(
-    'cart/storeEventId',
-    async (eventId, { getState }) => {
-            const cartState = getState().cart; // Access the cart slice state
-        if (typeof eventId === 'number' && cartState.status === 'STARTED') {
-            // Dispatch the eventId to the Redux store
-            return eventId;
-        }
-        // If eventId is not a number or the cart status is not 'STARTED', return null
-        return null;
-    }
-);
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -80,6 +68,12 @@ const cartSlice = createSlice({
       state.paymentMethod = action.payload
       Cookies.set('cart', JSON.stringify(state))
     },
+
+    saveClientId: (state, action) => {
+        state.clientId = action.payload
+        Cookies.set('cart', JSON.stringify(state))
+    },
+
     hideLoading: (state) => {
       state.loading = false
     },
@@ -110,6 +104,7 @@ export const {
   saveShippingAddress,
   savePaymentMethod,
   hideLoading,
+  saveClientId,
 } = cartSlice.actions
 
 export default cartSlice.reducer

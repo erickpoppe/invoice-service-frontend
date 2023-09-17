@@ -2,6 +2,7 @@
 
 import CheckoutWizard from '@/components/CheckoutWizard'
 import { saveShippingAddress } from '@/redux/slices/cartSlice'
+import { saveClientId } from '@/redux/slices/cartSlice'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -46,12 +47,15 @@ export default function ShippingAddressPage() {
 
       const response = await axios.post(url, payload, { headers });
       alert(`Cliente nuevo creado con ID:' ${response.data.id}`);
+      const ide = response.data.id;
       dispatch(saveShippingAddress(payload));
+      dispatch(saveClientId(ide));
       router.push('/payment');
     } catch (error) {
       console.error('Error creating client:', error);
     }
   };
+
   return (
       <div>
         <CheckoutWizard activeStep={1} />
