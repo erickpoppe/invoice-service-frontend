@@ -1,7 +1,6 @@
 'use client'
 
 import { useDispatch, useSelector } from 'react-redux'
-import CartSidebar from './CartSidebar'
 import Header from './Header'
 import { useEffect } from 'react'
 import { hideLoading } from '@/redux/slices/cartSlice'

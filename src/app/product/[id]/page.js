@@ -1,27 +1,30 @@
 'use client'
 
 import AddToCart from '@/components/AddToCart'
-import ProductRate from '@/components/ProductRate'
 import { data } from '@/utils/data'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 
 export default function ProductDetailPage({ params: { id } }) {
   const product = data.products.find((x) => x.id === id)
   const [productInfo, setProductInfo] = useState({
-    codigoProductoSin: 99100,
+    codigoProductoSin: product?.codigoProductoSin || 99100,
     descripcion: "",
     unidadMedida: 58,
-    especialidad: "Especialidad",
-    especialidadDetalle: "string",
+    especialidad: product?.especialidad || "Especialidad",
+    especialidadDetalle: product?.especialidadDetalle || "string",
     nroQuirofanoSalaOperaciones: 1,
-    especialidadMedico: "string",
+    especialidadMedico: product?.especialidadMedico || "string",
     nombreApellidoMedico: "Medicmel",
     nitDocumentoMedico: 392010028,
     nroMatriculaMedico: "string",
     nroFacturaMedico: 1,
   })
+
+  const saveDataToLocalStorage = () => {
+    // Save the productInfo to local storage
+    localStorage.setItem('productInfo', JSON.stringify(productInfo));
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -32,12 +35,12 @@ export default function ProductDetailPage({ params: { id } }) {
   }
 
   if (!product) {
-    return <div>Product Not Found</div>
+    return <div>Producto no encontrado</div>
   }
   return (
     <div>
       <div className="py-2">
-        <Link href="/">Volver a elegir productos</Link>
+        <Link href="/placeorder">Volver a elegir productos</Link>
       </div>
       <div className="grid md:grid-cols-4 md:gap-3">
         <div className="md:col-span-2">
@@ -162,11 +165,13 @@ export default function ProductDetailPage({ params: { id } }) {
         <div>
           <div className="card p-5">
             <div className="mb-2 flex justify-between">
-              <div>Precio</div>
-              <div>${product.price}</div>
+              <div>Datos</div>
             </div>
 
-            <AddToCart product={product} redirect={true} />
+            <div>
+              {/* Input fields and other components */}
+              <button className="primary-button" onClick={saveDataToLocalStorage}>Guardar datos</button>
+            </div>
           </div>
         </div>
       </div>

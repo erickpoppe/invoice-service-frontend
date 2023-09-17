@@ -29,7 +29,7 @@ export default function ShippingAddressPage() {
 
   const submitHandler = async (data) => {
     try {
-      const url = 'http://127.0.0.1:8000/clients/?customer_id=1';
+      const url = 'https://dev-core-invoice-service-q642kqwota-uc.a.run.app/clients/?customer_id=2&branch_id=1&pos_id=1';
       const headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
@@ -45,8 +45,7 @@ export default function ShippingAddressPage() {
       };
 
       const response = await axios.post(url, payload, { headers });
-      console.log('Client created with ID:', response.data.id);
-
+      alert(`Cliente nuevo creado con ID:' ${response.data.id}`);
       dispatch(saveShippingAddress(payload));
       router.push('/payment');
     } catch (error) {

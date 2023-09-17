@@ -83,6 +83,15 @@ const cartSlice = createSlice({
     hideLoading: (state) => {
       state.loading = false
     },
+    clearCart: (state) => {
+        state.cartItems = [];
+        state.itemsPrice = '0.00';
+        state.shippingPrice = '0.00';
+        state.taxPrice = '0.00';
+        state.totalPrice = '0.00';
+        Cookies.remove('cart');
+    },
+
   },
   extraReducers: (builder) => {
     builder
@@ -96,6 +105,7 @@ const cartSlice = createSlice({
 });
 export const {
   addToCart,
+  clearCart,
   removeFromCart,
   saveShippingAddress,
   savePaymentMethod,

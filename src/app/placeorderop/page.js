@@ -1,4 +1,4 @@
-    'use client'
+'use client'
 import CheckoutWizard from '@/components/CheckoutWizard'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -17,30 +17,8 @@ import { saveAs } from 'file-saver';
 
 
 
-
-
 export default function PlaceOrderScreen() {
     const { products } = data;
-
-    const [isOnline, setIsOnline] = useState(true);
-
-    const ledClass = isOnline ? 'Online' : 'Offline';
-
-    useEffect(() => {
-        const checkOnlineStatus = () => {
-            setIsOnline(window.navigator.onLine);
-        };
-
-        checkOnlineStatus();
-
-        const intervalId = setInterval(checkOnlineStatus, 10000);
-
-        return () => {
-            clearInterval(intervalId); // Cleanup the interval
-        };
-    }, []);
-
-
 
 
     const handleClearCart = () => {
@@ -227,7 +205,7 @@ export default function PlaceOrderScreen() {
 
 
     useEffect(() => {
-        const newApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=2&client_id=16&is_offline=${isOffline ? 1 : 0}`;
+        const newApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=2&client_id=15&is_offline=${isOffline ? 1 : 0}`;
         setApiUrl(newApiUrl);
     }, [isOffline]);
 
@@ -413,8 +391,6 @@ export default function PlaceOrderScreen() {
 
         const nombre_paciente = "Primer Paciente";
 
-
-
         const jsonObject = {
             details,
             nombre_paciente,
@@ -438,7 +414,6 @@ export default function PlaceOrderScreen() {
                     // Successfully sent the invoice
                     alert(response.data.status);
                     alert(`El número de factura es: ${response.data.invoice_number}`);
-                    alert(response.data.id);
                 } else {
                     // Handle the error
                     alert('Failed to send invoice. Please try again.');
@@ -623,12 +598,6 @@ export default function PlaceOrderScreen() {
                             <h2 className="mb-2 text-lg"><b>Resumen de Facturación</b></h2>
                             <ul>
                                 <li>
-                                    <div>
-                                        <p>Estado del Internet: {ledClass}</p>
-                                        {/* Other content */}
-                                    </div>
-                                </li>
-                                <li>
                                     <div className="mb-2 flex justify-between">
                                         <div>SubTotal</div>
                                         <div>Bs. {calculateUpdatedSubtotal()}</div>
@@ -708,72 +677,6 @@ export default function PlaceOrderScreen() {
                                     </div>
                                 </li>
 
-                            </ul>
-                            <ul>
-                                <div className="card  p-5">
-                                    <h2 className="mb-2 text-lg"><b>Anular factura</b></h2>
-                                    <ul>
-                                        <li className="mb-4"> {/* Add margin to create separation */}
-                                            <div className="flex justify-between items-center">
-                                                <div className="flex items-center"> {/* Add flex and items-center to center elements vertically */}
-                                                    <div>ID:</div>
-                                                    <input
-                                                        type="text"
-                                                        value={invoiceId}
-                                                        onChange={(e) => setInvoiceId(e.target.value)}
-                                                        className="border rounded p-1 ml-2"
-                                                        placeholder="ID de la factura..."
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <button onClick={handleAnularFactura} className="primary-button">
-                                                        Anular Factura
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div className="mb-4 flex justify-between items-center"> {/* Add margin and center elements vertically */}
-                                                <div>Código Motivo:</div>
-                                                <select
-                                                    value={codigoMotivo}
-                                                    onChange={(e) => setCodigoMotivo(e.target.value)}
-                                                    className="border rounded p-1"
-                                                >
-                                                    <option value="1">FACTURA MAL EMITIDA</option>
-                                                    <option value="2">NOTA DE CREDITO-DEBITO MAL EMITIDA</option>
-                                                    <option value="3">DATOS DE EMISION INCORRECTOS</option>
-                                                    <option value="4">FACTURA O NOTA DE CREDITO-DEBITO DEVUELTA</option>
-                                                </select>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <ul>
-                                        <h2 className="mb-2 text-lg"><b>Emitir reportes</b></h2>
-                                        <li className="mb-4"> {/* Add margin to create separation */}
-                                            <div className="flex justify-between items-center">
-                                                <div className="mb-2">
-                                                    <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
-                                                        Fecha de inicio
-                                                    </label>
-                                                    <input
-                                                        type="datetime-local" // Use datetime-local type
-                                                        id="startDate"
-                                                        name="startDate"
-                                                        className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                                                        value={startDate}
-                                                        onChange={(e) => setStartDate(e.target.value)}
-                                                    />
-                                                </div>
-                                                <div className="mb-2">
-                                                    <button onClick={handleRetrieveData} className="primary-button">
-                                                        Emitir reporte
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
                             </ul>
                         </div>
 

@@ -1,11 +1,9 @@
   'use client'
 
   import { addToCart, removeFromCart } from '@/redux/slices/cartSlice'
-  import Image from 'next/image'
   import Link from 'next/link'
   import { useRouter } from 'next/navigation'
   import { useDispatch, useSelector } from 'react-redux'
-  import React, { useState } from 'react'
 
 
   export default function CartPage() {

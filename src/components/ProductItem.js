@@ -1,7 +1,5 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-import ProductRate from './ProductRate'
 import AddToCart from './AddToCart'
 
 export default function ProductItem({ product }) {
@@ -14,7 +12,7 @@ export default function ProductItem({ product }) {
           <h2 className="text-lg">{product.name}</h2>
         </Link>
         <p className="mb-2">{product.brand}</p>
-        <p>${product.price}</p>
+        <p>Bs.{product.price}</p>
         <AddToCart
           showQty={false}
           product={product}
