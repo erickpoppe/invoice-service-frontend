@@ -87,15 +87,6 @@ const cartSlice = createSlice({
     },
 
   },
-  extraReducers: (builder) => {
-    builder
-      .addCase(storeEventId.fulfilled, (state, action) => {
-          if (action.payload !== null) {
-              state.eventId = action.payload;
-              Cookies.set('cart', JSON.stringify(state));
-          }
-      });
-  },
 });
 export const {
   addToCart,
