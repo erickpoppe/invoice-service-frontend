@@ -74,7 +74,9 @@ export default function PlaceOrderScreen() {
         const url = '/shipping'; // Replace with the correct URL
         const windowFeatures = 'width=600,height=600,scrollbars=yes,resizable=yes';
         const newWindow = window.open(url, '_blank', windowFeatures);
+
         setEditWindow(newWindow);
+
     };
 
     const closeEditWindow = () => {

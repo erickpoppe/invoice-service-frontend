@@ -8,6 +8,8 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ShippingAddressPage() {
   const {
@@ -50,7 +52,7 @@ export default function ShippingAddressPage() {
       const ide = response.data.id;
       dispatch(saveShippingAddress(payload));
       dispatch(saveClientId(ide));
-      router.push('/payment');
+      window.close();
     } catch (error) {
       console.error('Error creating client:', error);
     }
