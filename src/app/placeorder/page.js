@@ -227,6 +227,7 @@ export default function PlaceOrderScreen() {
 
     const [codigoMotivo, setCodigoMotivo] = useState('1');
     const [invoiceNumber, setInvoiceNumber] = useState('');
+    const [invoicePrintNumber, setInvoicePrintNumber] = useState('');
 
     const router = useRouter()
 
@@ -804,6 +805,29 @@ export default function PlaceOrderScreen() {
                                     </ul>
                                 </div>
                             </ul>
+                        </div>
+                        <div className="card  p-5">
+                            <div className="mb-3">
+                                <h2 className="mb-2 text-lg"><b>Imprimir Factura</b></h2>
+
+                                <div className="flex items-center"> {/* Add flex and items-center to center elements vertically */}
+                                    <div>Número de factura :</div>
+                                    <input
+                                        type="number"
+                                        value={invoicePrintNumber}
+                                        onChange={(e) => setInvoicePrintNumber(e.target.value)}
+                                        className="border rounded p-1 ml-2"
+                                        placeholder="Número de la factura..."
+                                    />
+                                </div>
+                                <ul>
+                                    <div className="mb-2 flex justify-between">
+                                        <button onClick={handleEmitirFacturasGuardadas} className="primary-button w-full">
+                                            Imprimir Factura
+                                        </button>
+                                    </div>
+                                </ul>
+                            </div>
                         </div>
 
 

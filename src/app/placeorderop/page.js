@@ -712,6 +712,8 @@ export default function PlaceOrderScreen() {
 
                             </ul>
                         </div>
+                        <div className="card  p-5">
+                        </div>
 
 
                     </div>
