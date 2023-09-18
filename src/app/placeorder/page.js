@@ -599,7 +599,7 @@ export default function PlaceOrderScreen() {
                                         value={selectedPaymentMethod}
                                         onChange={handlePaymentMethodChange}
                                     >
-                                        <option value="1">Efectivo</option>
+                                        <option value="1" selected>Efectivo</option>
                                         <option value="2">Tarjeta</option>
                                         <option value="7">Transferencia bancaria</option>
                                         <option value="10">Tarjeta y Efectivo</option>
