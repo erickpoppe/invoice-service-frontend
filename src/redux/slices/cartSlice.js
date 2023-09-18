@@ -76,7 +76,8 @@ const cartSlice = createSlice({
     },
 
     saveUserId: (state, action) => {
-
+        state.userId = action.payload
+        Cookies.set('cart', JSON.stringify(state))
     },
 
 
@@ -103,6 +104,7 @@ export const {
   savePaymentMethod,
   hideLoading,
   saveClientId,
+  saveUserId,
 } = cartSlice.actions
 
 export default cartSlice.reducer

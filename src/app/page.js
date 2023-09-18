@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import {addToCart, removeFromCart} from "@/redux/slices/cartSlice";
 import axios from 'axios';
+import {saveUserId} from '@/redux/slices/cartSlice.js';
 
 
 export default function Home() {
