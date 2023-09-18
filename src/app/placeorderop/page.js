@@ -534,7 +534,6 @@ export default function PlaceOrderScreen() {
                                                                 type="number"
                                                                 value={discounts[item.id] || ''}
                                                                 onChange={(e) => handleItemDiscountChange(item.id, e.target.value)}
-                                                                placeholder="Discount"
                                                                 className="w-16 border rounded p-1 text-right"
                                                             />
                                                         </td>
@@ -611,7 +610,6 @@ export default function PlaceOrderScreen() {
                                                 type="number"
                                                 value={additionalDiscount}
                                                 onChange={(e) => handleAdditionalDiscountChange(e.target.value)}
-                                                placeholder="Descuento Adicional"
                                                 className="w-16 border rounded p-1 text-right"
                                             />
                                         </div>
