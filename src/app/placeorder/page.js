@@ -419,13 +419,15 @@ export default function PlaceOrderScreen() {
             usuario: "string",
         };
 
+        const nombre_paciente = nombrePaciente;
+
 
 
 
 
         const jsonObject = {
             details,
-            nombrePaciente,
+            nombre_paciente,
             params,
         };
 
