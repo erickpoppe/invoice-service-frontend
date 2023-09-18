@@ -809,6 +809,7 @@ export default function PlaceOrderScreen() {
                         <div className="card  p-5">
                             <div className="mb-3">
                                 <h2 className="mb-2 text-lg"><b>Imprimir Factura</b></h2>
+                                <ul>
 
                                 <div className="flex items-center"> {/* Add flex and items-center to center elements vertically */}
                                     <div>Número de factura :</div>
@@ -820,6 +821,7 @@ export default function PlaceOrderScreen() {
                                         placeholder="Número de la factura..."
                                     />
                                 </div>
+                                </ul>
                                 <ul>
                                     <div className="mb-2 flex justify-between">
                                         <button onClick={handleEmitirFacturasGuardadas} className="primary-button w-full">

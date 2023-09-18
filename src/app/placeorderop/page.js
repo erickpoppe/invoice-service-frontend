@@ -702,13 +702,13 @@ export default function PlaceOrderScreen() {
                                         </button>
                                     </div>
                                 </li>
-                                <li>
+                                <ul>
                                     <div className="mb-2 flex justify-between">
                                         <button onClick={handleEmitirFacturasGuardadas} className="primary-button w-full">
                                             Emitir facturas guardadas
                                         </button>
                                     </div>
-                                </li>
+                                </ul>
 
                             </ul>
                         </div>
