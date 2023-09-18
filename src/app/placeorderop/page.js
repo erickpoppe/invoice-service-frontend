@@ -416,6 +416,7 @@ export default function PlaceOrderScreen() {
                     // Successfully sent the invoice
                     alert(response.data.status);
                     alert(`El número de factura es: ${response.data.invoice_number}`);
+                    alert(response.data.id);
                 } else {
                     // Handle the error
                     alert('Failed to send invoice. Please try again.');
