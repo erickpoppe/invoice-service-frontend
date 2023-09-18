@@ -220,7 +220,7 @@ export default function PlaceOrderScreen() {
     };
 
     const [codigoMotivo, setCodigoMotivo] = useState('1');
-    const [invoiceId, setInvoiceId] = useState('');
+    const [invoiceNumber, setInvoiceNumber] = useState('');
 
     const router = useRouter()
 
@@ -287,9 +287,8 @@ export default function PlaceOrderScreen() {
     };
 
     const handleAnularFactura = () => {
-        if (invoiceId) {
-            const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit?invoice_id=${invoiceId}&codigo_motivo=${codigoMotivo}&customer_id=2&branch_id=1&pos_id=1`;
-
+        if (invoiceNumber) {
+            const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/number/?invoice_number=${invoiceNumber}&codigo_motivo=${codigoMotivo}&customer_id=2&branch_id=1&pos_id=1`;
             axios
                 .delete(apiUrl)
                 .then((response) => {
@@ -725,10 +724,10 @@ export default function PlaceOrderScreen() {
                                                     <div>ID:</div>
                                                     <input
                                                         type="text"
-                                                        value={invoiceId}
-                                                        onChange={(e) => setInvoiceId(e.target.value)}
+                                                        value={invoiceNumber}
+                                                        onChange={(e) => setInvoiceNumber(e.target.value)}
                                                         className="border rounded p-1 ml-2"
-                                                        placeholder="ID de la factura..."
+                                                        placeholder="Número de la factura..."
                                                     />
                                                 </div>
                                                 <div>
