@@ -29,10 +29,12 @@ export default function Home() {
                     const role = response.data.role;
                     if (role === "ADMIN") {
                         alert(`Login exitoso como ADMIN`);
+                        dispatch(saveUserId(1))
                         router.push('/placeorder');
                     } else if (role === "OPERATOR") {
                         alert(`Login exitoso como OPERATOR`);
                         router.push('/placeorderop');
+                        dispatch(saveUserId(4))
                     } else {
                         alert(`Login falló debido a un rol desconocido`);
                     };

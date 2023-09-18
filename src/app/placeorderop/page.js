@@ -205,7 +205,7 @@ export default function PlaceOrderScreen() {
 
 
     useEffect(() => {
-        const newApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=2&client_id=15&is_offline=${isOffline ? 1 : 0}`;
+        const newApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=${user_id}&customer_id=2&client_id=15&is_offline=${isOffline ? 1 : 0}`;
         setApiUrl(newApiUrl);
     }, [isOffline]);
 
@@ -215,6 +215,8 @@ export default function PlaceOrderScreen() {
     const dispatch = useDispatch();
 
     const [eventId, setEventId] = useState(null);
+
+    const user_id= useSelector((state) => state.cart.userId);
 
     const handleServicioWebNoDisponible = () => {
 
