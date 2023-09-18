@@ -407,6 +407,7 @@ export default function PlaceOrderScreen() {
 
 
 
+
         const jsonObject = {
             details,
             nombre_paciente,
