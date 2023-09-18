@@ -626,10 +626,12 @@ export default function PlaceOrderScreen() {
                                 )}
                                 <button onClick={submitHandler} className="primary-button" >Registrar</button>
                             </div>
-                            <div>
+
+                            </div>
+                        <div className="card  p-5">
                             <div className="mb-3">
                                 <h2 className="mb-2 text-lg"><b>Datos del Paciente</b></h2>
-                                <label htmlFor="paymentMethod" className="form-label">Nombre del Paciente</label>
+                                <label htmlFor="paymentMethod" className="form-label">Nombre del Paciente :</label>
                                 <input
                                     type="text"
                                     id="nombrePaciente"
@@ -639,8 +641,7 @@ export default function PlaceOrderScreen() {
                                 />
                             </div>
                             <button onClick={submitHandler} className="primary-button" >Registrar</button>
-                            </div>
-                            </div>
+                        </div>
 
                     </div>
 
