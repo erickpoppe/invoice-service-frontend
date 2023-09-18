@@ -13,6 +13,7 @@ const initialState = Cookies.get('cart')
       eventId: null,
       codigoRecepcionEventoSignificativo: null,
       clientId: null,
+      userId: null,
 
     }
 
@@ -73,6 +74,12 @@ const cartSlice = createSlice({
         state.clientId = action.payload
         Cookies.set('cart', JSON.stringify(state))
     },
+
+    saveUserId: (state, action) => {
+
+    },
+
+
 
     hideLoading: (state) => {
       state.loading = false
