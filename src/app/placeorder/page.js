@@ -109,6 +109,19 @@ export default function PlaceOrderScreen() {
         setSelectedPaymentMethod(newValue);
     };
 
+    const handleImprimirFactura = (event) => {
+        const myUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/pdf?invoice_number=${invoicePrintNumber}&customer_id=2`;
+        axios.get(myUrl, { responseType: 'blob' })
+            .then ((response) => {
+                const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+                const filename = `invoice_${invoicePrintNumber}.pdf`;
+                saveAs(pdfBlob, filename);
+            })
+            .catch((error) => {
+                console.error('Error descargando el PDF:', error);
+            });
+    };
+
     const submitHandler = () => {
         // Store the selected payment method in Redux
         dispatch(savePaymentMethod(selectedPaymentMethod));
@@ -592,9 +605,9 @@ export default function PlaceOrderScreen() {
                             <h2 className="mb-2 text-lg"><b>Datos del cliente</b></h2>
                             <div> {/* Add the 'text-right' class here */}
                                 <button onClick={openEditWindow} className="primary-button">Editar</button>
-                                <div className="text-right">
-                                    El ID del cliente es {client_id}
-                                </div>
+                                <p> </p>
+                                <p> </p>
+
                             </div>
                         </div>
                         <div className="card  p-5">
@@ -826,7 +839,7 @@ export default function PlaceOrderScreen() {
                                 </ul>
                                 <ul>
                                     <div className="mb-2 flex justify-between">
-                                        <button onClick={handleEmitirFacturasGuardadas} className="primary-button w-full">
+                                        <button onClick={handleImprimirFactura} className="primary-button w-full">
                                             Imprimir Factura
                                         </button>
                                     </div>
