@@ -20,6 +20,15 @@ import { saveAs } from 'file-saver';
 export default function PlaceOrderScreen() {
     const { products } = data;
 
+    const [nombrePaciente, setNombrePaciente] = useState('');
+
+
+
+    const handleNombrePaciente = (event) => {
+        const newValue = event.target.value;
+        setNombrePaciente(newValue);
+    };
+
 
     const handleClearCart = () => {
         dispatch(clearCart());
@@ -346,10 +355,14 @@ export default function PlaceOrderScreen() {
     };
 
 
+
+
     const handleEnviarFactura = () => {
         setIsSubmitting(true);
 
         setSuccessMessage('');
+
+        const nombre_paciente = nombrePaciente;
 
         const details = cartItems.map((item) => ({
             actividadEconomica: "862010",
@@ -392,7 +405,7 @@ export default function PlaceOrderScreen() {
             usuario: "string",
         };
 
-        const nombre_paciente = "Primer Paciente";
+
 
         const jsonObject = {
             details,
@@ -594,6 +607,20 @@ export default function PlaceOrderScreen() {
                                 )}
                                 <button onClick={submitHandler} className="primary-button" >Registrar</button>
                             </div>
+                        </div>
+                        <div className="card  p-5">
+                            <div className="mb-3">
+                                <h2 className="mb-2 text-lg"><b>Datos del Paciente</b></h2>
+                                <label htmlFor="paymentMethod" className="form-label">Nombre del Paciente :</label>
+                                <input
+                                    type="text"
+                                    id="nombrePaciente"
+                                    className="form-control"
+                                    value={nombrePaciente}
+                                    onChange={handleNombrePaciente}
+                                />
+                            </div>
+                            <button onClick={submitHandler} className="primary-button" >Registrar</button>
                         </div>
                     </div>
 
