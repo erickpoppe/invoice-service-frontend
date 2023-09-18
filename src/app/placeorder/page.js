@@ -20,7 +20,7 @@ import { saveAs } from 'file-saver';
 
 
 export default function PlaceOrderScreen() {
-    const { products } = data;
+        const { products } = data;
 
     const [isOnline, setIsOnline] = useState(true);
 
@@ -115,6 +115,7 @@ export default function PlaceOrderScreen() {
 
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('1');
     const [creditCardNumber, setCreditCardNumber] = useState('');
+    const [nombrePaciente, setNombrePaciente] = useState('');
 
     const actividadEconomica = "862010";
     const codigoProductoSin = 99100;
@@ -217,6 +218,11 @@ export default function PlaceOrderScreen() {
 
     const handleAdditionalDiscountChange = (value) => {
         setAdditionalDiscount(parseFloat(value));
+    };
+
+    const handleNombrePaciente = (event) => {
+        const newValue = event.target.value;
+        setNombrePaciente(newValue);
     };
 
     const [codigoMotivo, setCodigoMotivo] = useState('1');
@@ -413,13 +419,13 @@ export default function PlaceOrderScreen() {
             usuario: "string",
         };
 
-        const nombre_paciente = "Primer Paciente";
+
 
 
 
         const jsonObject = {
             details,
-            nombre_paciente,
+            nombrePaciente,
             params,
         };
 
@@ -618,7 +624,22 @@ export default function PlaceOrderScreen() {
                                 )}
                                 <button onClick={submitHandler} className="primary-button" >Registrar</button>
                             </div>
-                        </div>
+                            <div>
+                            <div className="mb-3">
+                                <h2 className="mb-2 text-lg"><b>Datos del Paciente</b></h2>
+                                <label htmlFor="paymentMethod" className="form-label">Nombre del Paciente</label>
+                                <input
+                                    type="text"
+                                    id="nombrePaciente"
+                                    className="form-control"
+                                    value={nombrePaciente}
+                                    onChange={handleNombrePaciente}
+                                />
+                            </div>
+                            <button onClick={submitHandler} className="primary-button" >Registrar</button>
+                            </div>
+                            </div>
+
                     </div>
 
 
