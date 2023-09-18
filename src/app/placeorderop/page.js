@@ -205,7 +205,7 @@ export default function PlaceOrderScreen() {
 
 
     useEffect(() => {
-        const newApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=${user_id}&customer_id=2&client_id=15&is_offline=${isOffline ? 1 : 0}`;
+        const newApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=${user_id}&customer_id=2&client_id=${client_id}&is_offline=${isOffline ? 1 : 0}`;
         setApiUrl(newApiUrl);
     }, [isOffline]);
 
@@ -216,7 +216,8 @@ export default function PlaceOrderScreen() {
 
     const [eventId, setEventId] = useState(null);
 
-    const user_id= useSelector((state) => state.cart.userId);
+    const user_id = useSelector((state) => state.cart.userId);
+    const client_id = useSelector((state) => state.cart.userId);
 
     const handleServicioWebNoDisponible = () => {
 
@@ -552,10 +553,13 @@ export default function PlaceOrderScreen() {
                                 )}
                             </div>
                         </div>
-                        <div className="card  p-5">
+                        <div className="card p-5">
                             <h2 className="mb-2 text-lg"><b>Datos del cliente</b></h2>
-                            <div>
-                                <button onClick={openEditWindow} className="primary-button" >Editar</button>
+                            <div> {/* Add the 'text-right' class here */}
+                                <button onClick={openEditWindow} className="primary-button">Editar</button>
+                                <div className="text-right">
+                                    El ID del cliente es {client_id}
+                                </div>
                             </div>
                         </div>
                         <div className="card  p-5">
