@@ -682,7 +682,7 @@ export default function PlaceOrderScreen() {
                                 </li>
                                 <li>
                                     <div className="mb-2 flex justify-between">
-                                        <div>Descuento Adicional</div>
+                                        <div>Porcentaje de descuento adicional</div>
                                         <div>
                                             <input
                                                 type="number"
@@ -697,7 +697,8 @@ export default function PlaceOrderScreen() {
                                 <li>
                                     <div className="mb-2 flex justify-between">
                                         <div>SubTotal con Descuento</div>
-                                        <div>Bs. {(calculateUpdatedSubtotal() - additionalDiscount).toFixed(2)}</div>
+                                        <div>Bs. {((calculateUpdatedSubtotal() * (1 - (additionalDiscount || 0) / 100)).toFixed(2)}</div>
+
                                     </div>
                                 </li>
                                 <li>
