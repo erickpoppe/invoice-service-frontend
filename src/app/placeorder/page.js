@@ -514,12 +514,69 @@ export default function PlaceOrderScreen() {
 
                     {/* Middle Column */}
                     <div className="md:col-span-2 col-span-4">
+                        <div className="card p-5">
+                            <h2 className="mb-2 text-lg"><b>Datos del cliente</b></h2>
+                            <div> {/* Add the 'text-right' class here */}
+                                <button onClick={openEditWindow} className="primary-button">Editar</button>
+                                <p> </p>
+                                <p> </p>
+
+                            </div>
+                        </div>
+                        <div className="card  p-5">
+                            <h2 className="mb-2 text-lg"><b>Método de Pago</b></h2>
+                            <div>{paymentMethod}</div>
+                            <div>
+                                <div className="mb-3">
+                                    <label htmlFor="paymentMethod" className="form-label">Tipo de método de pago</label>
+                                    <select
+                                        id="paymentMethod"
+                                        className="form-select"
+                                        value={selectedPaymentMethod}
+                                        onChange={handlePaymentMethodChange}
+                                    >
+                                        <option value="1" selected>Efectivo</option>
+                                        <option value="2">Tarjeta</option>
+                                        <option value="7">Transferencia bancaria</option>
+                                        <option value="10">Tarjeta y Efectivo</option>
+                                    </select>
+                                </div>
+                                {selectedPaymentMethod === "2" && (
+                                    <div className="mb-3">
+                                        <label htmlFor="creditCardNumber" className="form-label">Número de tarjeta de crédito </label>
+                                        <input
+                                            type="text"
+                                            id="creditCardNumber"
+                                            className="form-control"
+                                            value={creditCardNumber}
+                                            onChange={handleCreditCardChange}
+                                        />
+                                    </div>
+                                )}
+                                <button onClick={submitHandler} className="primary-button" >Registrar</button>
+                            </div>
+
+                        </div>
+                        <div className="card  p-5">
+                            <div className="mb-3">
+                                <h2 className="mb-2 text-lg"><b>Datos del Paciente</b></h2>
+                                <label htmlFor="paymentMethod" className="form-label">Nombre del Paciente :</label>
+                                <input
+                                    type="text"
+                                    id="nombrePaciente"
+                                    className="form-control"
+                                    value={nombrePaciente}
+                                    onChange={handleNombrePaciente}
+                                />
+                            </div>
+                            <button onClick={submitHandler} className="primary-button" >Registrar</button>
+                        </div>
                         <div className="bg-white p-4 rounded shadow">
                             <h2 className="text-xl font-semibold">Resumen de Venta de Artículos</h2>
                             <div>
                                 <button className="primary-button" onClick={handleClearCart}>Borrar ventas</button>
                             </div>
-                            <div>
+                            <div className="scrollable-content" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                 <h1 className="mb-4 text-xl"></h1>
 
                                 {loading ? (
@@ -584,7 +641,7 @@ export default function PlaceOrderScreen() {
                                                             <input
                                                                 type="number"
                                                                 min="0"
-                                                                value={discounts[item.id] || ''}
+                                                                    value={discounts[item.id] || ''}
                                                                 onChange={(e) => handleItemDiscountChange(item.id, e.target.value)}
                                                                 className="w-16 border rounded p-1 text-right"
                                                             />
@@ -601,63 +658,7 @@ export default function PlaceOrderScreen() {
                                 )}
                             </div>
                         </div>
-                        <div className="card p-5">
-                            <h2 className="mb-2 text-lg"><b>Datos del cliente</b></h2>
-                            <div> {/* Add the 'text-right' class here */}
-                                <button onClick={openEditWindow} className="primary-button">Editar</button>
-                                <p> </p>
-                                <p> </p>
 
-                            </div>
-                        </div>
-                        <div className="card  p-5">
-                            <h2 className="mb-2 text-lg"><b>Método de Pago</b></h2>
-                            <div>{paymentMethod}</div>
-                            <div>
-                                <div className="mb-3">
-                                    <label htmlFor="paymentMethod" className="form-label">Tipo de método de pago</label>
-                                    <select
-                                        id="paymentMethod"
-                                        className="form-select"
-                                        value={selectedPaymentMethod}
-                                        onChange={handlePaymentMethodChange}
-                                    >
-                                        <option value="1" selected>Efectivo</option>
-                                        <option value="2">Tarjeta</option>
-                                        <option value="7">Transferencia bancaria</option>
-                                        <option value="10">Tarjeta y Efectivo</option>
-                                    </select>
-                                </div>
-                                {selectedPaymentMethod === "2" && (
-                                    <div className="mb-3">
-                                        <label htmlFor="creditCardNumber" className="form-label">Número de tarjeta de crédito </label>
-                                        <input
-                                            type="text"
-                                            id="creditCardNumber"
-                                            className="form-control"
-                                            value={creditCardNumber}
-                                            onChange={handleCreditCardChange}
-                                        />
-                                    </div>
-                                )}
-                                <button onClick={submitHandler} className="primary-button" >Registrar</button>
-                            </div>
-
-                            </div>
-                        <div className="card  p-5">
-                            <div className="mb-3">
-                                <h2 className="mb-2 text-lg"><b>Datos del Paciente</b></h2>
-                                <label htmlFor="paymentMethod" className="form-label">Nombre del Paciente :</label>
-                                <input
-                                    type="text"
-                                    id="nombrePaciente"
-                                    className="form-control"
-                                    value={nombrePaciente}
-                                    onChange={handleNombrePaciente}
-                                />
-                            </div>
-                            <button onClick={submitHandler} className="primary-button" >Registrar</button>
-                        </div>
 
                     </div>
 
