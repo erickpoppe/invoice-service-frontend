@@ -576,7 +576,7 @@ export default function PlaceOrderScreen() {
                             <div>
                                 <button className="primary-button" onClick={handleClearCart}>Borrar ventas</button>
                             </div>
-                            <div className="scrollable-content" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                            <div>
                                 <h1 className="mb-4 text-xl"></h1>
 
                                 {loading ? (
@@ -595,7 +595,7 @@ export default function PlaceOrderScreen() {
                                                     <th className="p-5 text-right">Cantidad</th>
                                                     <th className="p-5 text-right">Precio</th>
                                                     <th className="p-5">Acción</th>
-                                                    <th className="p-5">Descuento</th>
+                                                    <th className="p-5">Descuento %</th>
                                                     <th className="p-5">Subtotal</th>
                                                 </tr>
                                                 </thead>
@@ -647,7 +647,7 @@ export default function PlaceOrderScreen() {
                                                             />
                                                         </td>
                                                         <td className="p-5 text-right">
-                                                            Bs. {(item.qty * item.price - (discounts[item.id] || 0)).toFixed(2)}
+                                                            Bs. {(item.qty * item.price * (1 - (discounts[item.id] || 0) / 100)).toFixed(2)}
                                                         </td>
                                                     </tr>
                                                 ))}
