@@ -118,7 +118,7 @@ export default function PlaceOrderScreen() {
                 saveAs(pdfBlob, filename);
             })
             .catch((error) => {
-                console.error('Error descargando el PDF:', error);
+                console.error('Error descargando el PDF :', error);
             });
     };
 
