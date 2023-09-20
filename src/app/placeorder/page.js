@@ -210,8 +210,9 @@ export default function PlaceOrderScreen() {
     const calculateUpdatedSubtotal = () => {
         let updatedSubtotal = 0;
         cartItems.forEach((item) => {
-            const discount = discounts[item.id] || 0;
-            updatedSubtotal += item.qty * item.price - discount;
+            const discountPercentage = discounts[item.id] || 0;
+            const discountedAmount = (item.qty * item.price * (1 - discountPercentage / 100));
+            updatedSubtotal += discountedAmount;
         });
         return updatedSubtotal.toFixed(2);
     };
@@ -697,8 +698,7 @@ export default function PlaceOrderScreen() {
                                 <li>
                                     <div className="mb-2 flex justify-between">
                                         <div>SubTotal con Descuento</div>
-                                        <div>Bs. {((calculateUpdatedSubtotal() * (1 - (additionalDiscount || 0) / 100)).toFixed(2)}</div>
-
+                                        <div>Bs. {(calculateUpdatedSubtotal() - additionalDiscount).toFixed(2)}</div>
                                     </div>
                                 </li>
                                 <li>
