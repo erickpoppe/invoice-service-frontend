@@ -492,29 +492,6 @@ export default function PlaceOrderScreen() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 lg:grid-cols-4">
                     {/* Left Column */}
                     <div className="col-span-1 md:col-span-1">
-                        <div className="p-4">
-                            {/* Search input */}
-                            <input
-                                type="text"
-                                placeholder="Busque productos..."
-                                className="w-full p-2 border border-gray-300 rounded-md"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-
-                            {/* Center part with scrollable content */}
-                            <div className="overflow-y-auto max-h-[calc(100vh-4rem)]">
-                                <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                                    {filteredProducts.map((product) => (
-                                        <ProductItem key={product.id} product={product} />
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Middle Column */}
-                    <div className="md:col-span-2 col-span-4">
                         <div className="card p-5">
                             <h2 className="mb-2 text-lg"><b>Datos del cliente</b></h2>
                             <div> {/* Add the 'text-right' class here */}
@@ -558,6 +535,29 @@ export default function PlaceOrderScreen() {
                             </div>
 
                         </div>
+                        <div className="p-4">
+                            {/* Search input */}
+                            <input
+                                type="text"
+                                placeholder="Busque productos..."
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+
+                            {/* Center part with scrollable content */}
+                            <div className="overflow-y-auto max-h-[calc(100vh-4rem)]">
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                                    {filteredProducts.map((product) => (
+                                        <ProductItem key={product.id} product={product} />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Middle Column */}
+                    <div className="md:col-span-2 col-span-4">
                         <div className="card  p-5">
                             <div className="mb-3">
                                 <h2 className="mb-2 text-lg"><b>Datos del Paciente</b></h2>
