@@ -564,11 +564,11 @@ export default function PlaceOrderScreen() {
                     <div className="md:col-span-2 col-span-4">
                         <div className="card p-5">
                             <h2 className="mb-2 text-lg"><b>Datos del cliente</b></h2>
-                            <div> {/* Add the 'text-right' class here */}
-                                <button onClick={openEditWindow} className="primary-button">Editar</button>
+                            <div className="text-right">
+                                <button onClick={openEditWindow} className="primary-button mb-2">Editar y guardar</button>
                                 <p> </p>
                                 <p> </p>
-
+                                <button onClick={openEditWindow} className="primary-button">Buscar cliente</button>
                             </div>
                         </div>
                         <div className="bg-white p-4 rounded shadow">
