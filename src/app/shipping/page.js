@@ -54,7 +54,7 @@ export default function ShippingAddressPage() {
       dispatch(saveShippingAddress(payload));
       dispatch(saveClientId(ide));
     } catch (error) {
-      alert(`EL NIT ES INVÁLIDO`);
+      alert(`EL NIT ES INVÁLIDO!`);
       console.error('Error creating client:', error);
     }
   };
