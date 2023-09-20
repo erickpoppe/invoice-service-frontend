@@ -491,14 +491,19 @@ export default function PlaceOrderScreen() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 lg:grid-cols-4">
                     {/* Left Column */}
                     <div className="col-span-1 md:col-span-1">
-                        <div className="card p-5">
-                            <h2 className="mb-2 text-lg"><b>Datos del cliente</b></h2>
-                            <div> {/* Add the 'text-right' class here */}
-                                <button onClick={openEditWindow} className="primary-button">Editar</button>
-                                <p> </p>
-                                <p> </p>
-
+                        <div className="card  p-5">
+                            <div className="mb-3">
+                                <h2 className="mb-2 text-lg"><b>Datos del Paciente</b></h2>
+                                <label htmlFor="paymentMethod" className="form-label">Nombre del Paciente :</label>
+                                <input
+                                    type="text"
+                                    id="nombrePaciente"
+                                    className="form-control"
+                                    value={nombrePaciente}
+                                    onChange={handleNombrePaciente}
+                                />
                             </div>
+                            <button onClick={submitHandler} className="primary-button" >Registrar</button>
                         </div>
                         <div className="card  p-5">
                             <h2 className="mb-2 text-lg"><b>Método de Pago</b></h2>
@@ -557,19 +562,14 @@ export default function PlaceOrderScreen() {
 
                     {/* Middle Column */}
                     <div className="md:col-span-2 col-span-4">
-                        <div className="card  p-5">
-                            <div className="mb-3">
-                                <h2 className="mb-2 text-lg"><b>Datos del Paciente</b></h2>
-                                <label htmlFor="paymentMethod" className="form-label">Nombre del Paciente :</label>
-                                <input
-                                    type="text"
-                                    id="nombrePaciente"
-                                    className="form-control"
-                                    value={nombrePaciente}
-                                    onChange={handleNombrePaciente}
-                                />
+                        <div className="card p-5">
+                            <h2 className="mb-2 text-lg"><b>Datos del cliente</b></h2>
+                            <div> {/* Add the 'text-right' class here */}
+                                <button onClick={openEditWindow} className="primary-button">Editar</button>
+                                <p> </p>
+                                <p> </p>
+
                             </div>
-                            <button onClick={submitHandler} className="primary-button" >Registrar</button>
                         </div>
                         <div className="bg-white p-4 rounded shadow">
                             <h2 className="text-xl font-semibold">Resumen de Venta de Artículos</h2>
