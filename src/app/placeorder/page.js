@@ -171,6 +171,11 @@ export default function PlaceOrderScreen() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [discounts, setDiscounts] = useState({});
 
+    const [clientData, setClientData] = useState(null);
+
+
+
+
 
 
 
@@ -359,6 +364,35 @@ export default function PlaceOrderScreen() {
         }
     };
 
+    const handleBuscarCliente = async () => {
+        try {
+            const response = await axios.get('https://dev-core-invoice-service-q642kqwota-uc.a.run.app/clients/', {
+                headers: {
+                    Accept: 'application/json',
+                },
+            });
+
+            if (response.status === 200) {
+                const clients = response.data;
+
+                // Use the value from the input field as the search field
+                const foundClient = clients.find((client) => client[searchField] === 'desiredValue');
+
+                if (foundClient) {
+                    console.log('Found Client:', foundClient);
+                } else {
+                    console.log('Client not found');
+                }
+
+                setClientData(clients);
+            } else {
+                console.error('Failed to fetch client data');
+            }
+        } catch (error) {
+            console.error('Error fetching client data:', error);
+        }
+    };
+
     const handleEmitirFacturasGuardadas = () => {
         if (eventId) {
             // Construct the URL with event_id
@@ -388,6 +422,8 @@ export default function PlaceOrderScreen() {
             alert('Event ID is not available.');
         }
     };
+
+    const [searchField, setSearchField] = useState('');
 
 
     const handleEnviarFactura = () => {
@@ -422,6 +458,8 @@ export default function PlaceOrderScreen() {
             // Open the emergent window
             window.open(url, '_blank');
         };
+
+
 
 
         const params = {
@@ -562,15 +600,29 @@ export default function PlaceOrderScreen() {
 
                     {/* Middle Column */}
                     <div className="md:col-span-2 col-span-4">
-                        <div className="card p-5">
-                            <h2 className="mb-2 text-lg"><b>Datos del cliente</b></h2>
-                            <div className="text-right">
-                                <button onClick={openEditWindow} className="primary-button mb-2">Editar y guardar</button>
-                                <p> </p>
-                                <p> </p>
-                                <button onClick={openEditWindow} className="primary-button">Buscar cliente</button>
+                            <div className="card p-5">
+                                <h2 className="mb-2 text-lg"><b>Datos del cliente</b></h2>
+                                <div className="text-right">
+                                    <button onClick={openEditWindow} className="primary-button mb-2">Editar y guardar</button>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter field name"
+                                        value={searchField}
+                                        onChange={(e) => setSearchField(e.target.value)}
+                                    />
+                                    <button onClick={handleBuscarCliente} className="primary-button">Buscar cliente</button>
+                                </div>
+                                {clientData && (
+                                    <div className="client-list">
+                                        <h3>Client List</h3>
+                                        <ul>
+                                            {clientData.map((client) => (
+                                                <li key={client.id}>{client.name}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
                             </div>
-                        </div>
                         <div className="bg-white p-4 rounded shadow">
                             <h2 className="text-xl font-semibold">Resumen de Venta de Artículos</h2>
                             <div>
