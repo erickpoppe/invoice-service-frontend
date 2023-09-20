@@ -616,18 +616,7 @@ export default function PlaceOrderScreen() {
                                                             </a>
                                                         </td>
                                                         <td className="p-5 text-right">
-                                                            <select
-                                                                value={item.qty}
-                                                                onChange={(e) =>
-                                                                    addToCartHandler(item, Number(e.target.value))
-                                                                }
-                                                            >
-                                                                {[...Array(item.countInStock).keys()].map((x) => (
-                                                                    <option key={x + 1} value={x + 1}>
-                                                                        {x + 1}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
+
                                                         </td>
                                                         <td className="p-5 text-right">Bs. {item.price}</td>
                                                         <td className="p-5 text-center">

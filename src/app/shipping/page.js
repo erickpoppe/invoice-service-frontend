@@ -60,7 +60,6 @@ export default function ShippingAddressPage() {
 
   return (
       <div>
-        <CheckoutWizard activeStep={1} />
         <form
             className="mx-auto max-w-screen-md"
             onSubmit={handleSubmit(submitHandler)}
