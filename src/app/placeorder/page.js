@@ -482,7 +482,6 @@ export default function PlaceOrderScreen() {
 
     return (
         <div>
-            <CheckoutWizard activeStep={2} />
             <h1 className="mb-4 text-xl font-bold">
                 <b>Sistema de facturación electrónica</b>
             </h1>

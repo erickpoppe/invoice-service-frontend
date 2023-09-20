@@ -38,7 +38,7 @@ export default function ShippingAddressPage() {
         'Content-Type': 'application/json'
       };
 
-      // Create a simple object with the required fields
+
       const payload = {
         nombre_razon_social: data.fullName,
         correo_electronico: data.address,
@@ -48,6 +48,9 @@ export default function ShippingAddressPage() {
       };
 
       const response = await axios.post(url, payload, { headers });
+      if (response.data.detail == "Nit invalido") {
+        alert(`EL NIT ENVIADO ES INVÁLIDO`);
+      }
       alert(`Cliente nuevo creado con ID:' ${response.data.id}`);
       const ide = response.data.id;
       dispatch(saveShippingAddress(payload));
