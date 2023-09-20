@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {error} from "next/dist/build/output/log";
 
 export default function ShippingAddressPage() {
   const {
@@ -48,15 +49,12 @@ export default function ShippingAddressPage() {
       };
 
       const response = await axios.post(url, payload, { headers });
-      if (response.data.detail == "Nit invalido") {
-        alert(`EL NIT ENVIADO ES INVÁLIDO`);
-      }
       alert(`Cliente nuevo creado con ID:' ${response.data.id}`);
       const ide = response.data.id;
       dispatch(saveShippingAddress(payload));
       dispatch(saveClientId(ide));
-      window.close();
     } catch (error) {
+      alert(`EL NIT ES INVÁLIDO`);
       console.error('Error creating client:', error);
     }
   };
