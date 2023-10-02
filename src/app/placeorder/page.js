@@ -13,6 +13,8 @@ import axios from 'axios';
 import ProductItem from "@/components/ProductItem";
 import {data} from "@/utils/data";
 import { saveAs } from 'file-saver';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -20,7 +22,9 @@ import { saveAs } from 'file-saver';
 
 
 export default function PlaceOrderScreen() {
-        const { products } = data;
+    const [foundClient, setFoundClient] = useState('');
+
+    const { products } = data;
 
     const [isOnline, setIsOnline] = useState(true);
 
@@ -50,6 +54,7 @@ export default function PlaceOrderScreen() {
     const removeFromCartHandler = (id) => {
         dispatch(removeFromCart(id))
     }
+
 
     const addToCartHandler = async (product, qty) => {
         dispatch(addToCart({ ...product, qty }))
@@ -110,7 +115,7 @@ export default function PlaceOrderScreen() {
     };
 
     const handleImprimirFactura = (event) => {
-        const myUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/pdf?invoice_number=${invoicePrintNumber}&customer_id=2`;
+        const myUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/pdf?invoice_number=${invoicePrintNumber}&customer_id=1`;
         axios.get(myUrl, { responseType: 'blob' })
             .then ((response) => {
                 const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
@@ -241,9 +246,10 @@ export default function PlaceOrderScreen() {
         setAdditionalDiscount(parseFloat(value));
     };
 
-    const handleNombrePaciente = (event) => {
-        const newValue = event.target.value;
-        setNombrePaciente(newValue);
+    const handleNombrePaciente = () => {
+        console.log('Nombre del Paciente:', nombrePaciente);
+        toast.success('Nombre del paciente registrado.');
+        setNombrePaciente('');
     };
 
     const [codigoMotivo, setCodigoMotivo] = useState('1');
@@ -258,7 +264,7 @@ export default function PlaceOrderScreen() {
     const client_id = useSelector((state) => state.cart.clientId);
 
     useEffect(() => {
-        const newApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=${user_id}&customer_id=2&client_id=${client_id}&is_offline=${isOffline ? 1 : 0}`;
+        const newApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=1&client_id=2&is_offline=${isOffline ? 1 : 0}`;
         setApiUrl(newApiUrl);
     }, [isOffline]);
 
@@ -364,34 +370,38 @@ export default function PlaceOrderScreen() {
         }
     };
 
-    const handleBuscarCliente = async () => {
-        try {
-            const response = await axios.get('https://dev-core-invoice-service-q642kqwota-uc.a.run.app/clients/', {
-                headers: {
-                    Accept: 'application/json',
-                },
-            });
+        const handleBuscarCliente = async () => {
+            try {
+                const response = await axios.get('https://dev-core-invoice-service-q642kqwota-uc.a.run.app/clients/', {
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                });
 
-            if (response.status === 200) {
-                const clients = response.data;
+                if (response.status === 200) {
+                    const clients = response.data;
 
-                // Use the value from the input field as the search field
-                const foundClient = clients.find((client) => client[searchField] === 'desiredValue');
+                    // Use the value from the input field as the search field
+                    const foundClient = clients.find((client) => client.numero_documento === searchField);
 
-                if (foundClient) {
-                    console.log('Found Client:', foundClient);
+                    if (foundClient) {
+                        console.log('Found Client:', foundClient);
+                        setFoundClient(foundClient);
+                    } else {
+                        console.log('Client not found');
+                        setFoundClient(null);
+                    }
+
                 } else {
-                    console.log('Client not found');
+                    console.error('Failed to fetch client data');
                 }
-
-                setClientData(clients);
-            } else {
-                console.error('Failed to fetch client data');
+            } catch (error) {
+                console.error('Error fetching client data:', error);
             }
-        } catch (error) {
-            console.error('Error fetching client data:', error);
-        }
-    };
+        };
+
+
+
 
     const handleEmitirFacturasGuardadas = () => {
         if (eventId) {
@@ -440,7 +450,7 @@ export default function PlaceOrderScreen() {
             unidadMedida: 58,
             precioUnitario: item.price,
             montoDescuento: discounts[item.id] || 0,
-            subTotal: (item.qty * item.price - (discounts[item.id] || 0)).toFixed(2),
+            subTotal: (item.qty * item.price * (1 - (discounts[item.id] || 0) / 100)).toFixed(2),
             especialidad: item.especialidad,
             especialidadDetalle: item.especialidadDetalle,
             nroQuirofanoSalaOperaciones: item.nroQuirofanoSalaOperaciones,
@@ -538,10 +548,10 @@ export default function PlaceOrderScreen() {
                                     id="nombrePaciente"
                                     className="form-control"
                                     value={nombrePaciente}
-                                    onChange={handleNombrePaciente}
+                                    onChange={(e) => setNombrePaciente(e.target.value)}
                                 />
                             </div>
-                            <button onClick={submitHandler} className="primary-button" >Registrar</button>
+                            <button onClick={handleNombrePaciente} className="primary-button" >Registrar</button>
                         </div>
                         <div className="card  p-5">
                             <h2 className="mb-2 text-lg"><b>Método de Pago</b></h2>
@@ -603,25 +613,28 @@ export default function PlaceOrderScreen() {
                             <div className="card p-5">
                                 <h2 className="mb-2 text-lg"><b>Datos del cliente</b></h2>
                                 <div className="text-right">
-                                    <button onClick={openEditWindow} className="primary-button mb-2">Editar y guardar</button>
+                                    <button onClick={openEditWindow} className="primary-button mb-2 mr-3">Editar y guardar</button>
                                     <input
                                         type="text"
-                                        placeholder="Enter field name"
+                                        placeholder="Escriba datos..."
                                         value={searchField}
                                         onChange={(e) => setSearchField(e.target.value)}
+                                        className="mb-3"
                                     />
-                                    <button onClick={handleBuscarCliente} className="primary-button">Buscar cliente</button>
+                                    <button onClick={handleBuscarCliente} className="primary-button">Buscar cliente venta</button>
                                 </div>
-                                {clientData && (
-                                    <div className="client-list">
-                                        <h3>Client List</h3>
-                                        <ul>
-                                            {clientData.map((client) => (
-                                                <li key={client.id}>{client.name}</li>
-                                            ))}
-                                        </ul>
+                                {foundClient !== null ? (
+                                    <div className="found-client">
+                                        <h3>Cliente encontrado: </h3>
+                                        <p>ID: {foundClient.id}</p>
+                                        <p>Nombre: {foundClient.nombre_razon_social}</p>
+                                    </div>
+                                ) : (
+                                    <div className="no-client-found">
+                                    <p>No se encontró ningún cliente.</p>
                                     </div>
                                 )}
+
                             </div>
                         <div className="bg-white p-4 rounded shadow">
                             <h2 className="text-xl font-semibold">Resumen de Venta de Artículos</h2>
@@ -667,7 +680,14 @@ export default function PlaceOrderScreen() {
                                                             </a>
                                                         </td>
                                                         <td className="p-5 text-right">
-
+                                                            <input
+                                                                type="number"
+                                                                value={item.qty}
+                                                                onChange={(e) => {
+                                                                    const newValue = Math.max(1, Number(e.target.value));
+                                                                    addToCartHandler(item, newValue);
+                                                                }}
+                                                            />
                                                         </td>
                                                         <td className="p-5 text-right">Bs. {item.price}</td>
                                                         <td className="p-5 text-center">
@@ -898,6 +918,7 @@ export default function PlaceOrderScreen() {
                     </div>
                 </div>
             )}
+            <ToastContainer />
         </div>
     )
 }

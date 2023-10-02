@@ -33,7 +33,7 @@ export default function ShippingAddressPage() {
 
   const submitHandler = async (data) => {
     try {
-      const url = 'https://dev-core-invoice-service-q642kqwota-uc.a.run.app/clients/?customer_id=2&branch_id=1&pos_id=1';
+      const url = 'https://dev-core-invoice-service-q642kqwota-uc.a.run.app/clients/?customer_id=1&branch_id=1&pos_id=1';
       const headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
@@ -46,6 +46,7 @@ export default function ShippingAddressPage() {
         complemento: data.city,
         numero_documento: data.postalCode,
         codigo_tipo_documento_identidad: data.country,
+        customer_id: 1,
       };
 
       const response = await axios.post(url, payload, { headers });
