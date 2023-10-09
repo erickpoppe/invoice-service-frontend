@@ -47,6 +47,8 @@ export default function PlaceOrderScreen() {
 
 
 
+
+
     const handleClearCart = () => {
         dispatch(clearCart());
     };
@@ -135,52 +137,15 @@ export default function PlaceOrderScreen() {
 
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('1');
     const [creditCardNumber, setCreditCardNumber] = useState('');
-    const [nombrePaciente, setNombrePaciente] = useState('');
+    const [nombre_paciente, setNombre_paciente] = useState('');
 
-    const actividadEconomica = "862010";
-    const codigoProductoSin = 99100;
-    const codigoProducto = "";
-    const descripcion = "";
-    const unidadMedida = 58;
-    const precioUnitario = null; // Set the fixed value of 65.0
-    const montoDescuento = null;
-    const especialidad = "";
-    const especialidadDetalle = "";
-    const nroQuirofanoSalaOperaciones = null;
-    const especialidadMedico = "";
-    const nombreApellidoMedico = "Medicmel";
-    const nitDocumentoMedico = 392010028;
-    const nroMatriculaMedico = "";
-    const nroFacturaMedico = null;
 
-    // Calculate the values based on cartItems
-    const cantidad = cartItems.reduce((total, item) => total + item.qty, 0);
-    const subTotal = null;
-    const monto_total_moneda = null;
-    const monto_total = null;
-    const monto_total_sujeto_iva = null;
-
-    // Define the params object
-    const params = {
-        codigo_metodo_pago: null,
-        monto_total: null,
-        monto_total_sujeto_iva: null,
-        codigo_moneda: 1,
-        tipo_cambio: 1,
-        monto_total_moneda: null,
-        monto_gift_card: null,
-        descuento_adicional: null,
-        leyenda: "",
-        usuario: "",
-    };
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [discounts, setDiscounts] = useState({});
 
     const [clientData, setClientData] = useState(null);
 
-
-
-
+    const [creditCard, setCreditCard] = useState(null);
 
 
 
@@ -195,7 +160,7 @@ export default function PlaceOrderScreen() {
         const formattedStartDate = new Date(startDate).toISOString();
 
 
-        const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/reports/?start_date=${encodeURIComponent(formattedStartDate)}&customer_id=2`;
+        const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/reports/?start_date=${encodeURIComponent(formattedStartDate)}&customer_id=1`;
 
         axios
             .get(apiUrl, {
@@ -235,6 +200,8 @@ export default function PlaceOrderScreen() {
 
     const [apiUrl, setApiUrl] = useState('');
 
+    const [apixUrl, setApixUrl] = useState('')
+
     const toggleIsOffline = () => {
         setIsOffline((prevIsOffline) => !prevIsOffline);
         console.log(apiUrl);
@@ -246,10 +213,9 @@ export default function PlaceOrderScreen() {
         setAdditionalDiscount(parseFloat(value));
     };
 
-    const handleNombrePaciente = () => {
-        console.log('Nombre del Paciente:', nombrePaciente);
+    const handleNombrePaciente = (event) => {
+        console.log('Nombre del Paciente:', nombre_paciente);
         toast.success('Nombre del paciente registrado.');
-        setNombrePaciente('');
     };
 
     const [codigoMotivo, setCodigoMotivo] = useState('1');
@@ -261,12 +227,26 @@ export default function PlaceOrderScreen() {
 
 
     const user_id= useSelector((state) => state.cart.userId);
-    const client_id = useSelector((state) => state.cart.clientId);
+    let client_id = foundClient.id;
 
     useEffect(() => {
-        const newApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=1&client_id=2&is_offline=${isOffline ? 1 : 0}`;
+        const newApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=1&client_id=${client_id}&is_offline=${isOffline ? 1 : 0}`;
         setApiUrl(newApiUrl);
-    }, [isOffline]);
+        }, [client_id]);
+
+    useEffect(() => {
+        const nuevoApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=1&client_id=${client_id}&is_offline=${isOffline ? 1 : 0}`;
+        setApixUrl(nuevoApiUrl);
+    }, [client_id, isOffline]);
+
+    const handleEstablecerCliente = () => {
+        if (foundClient) {
+            client_id = foundClient.id;
+            console.log(client_id);
+        } else {
+            console.log("No hay ese cliente!")
+        };
+    };
 
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
@@ -286,7 +266,7 @@ export default function PlaceOrderScreen() {
 
         axios
             .post(
-                `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/operations/events/start?customer_id=2&branch_id=1&pos_id=1`,
+                `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/operations/events/start?customer_id=1&branch_id=1&pos_id=1`,
                 payload,
                 {
                     headers: {
@@ -322,7 +302,7 @@ export default function PlaceOrderScreen() {
 
     const handleAnularFactura = () => {
         if (invoiceNumber) {
-            const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/number/?invoice_number=${invoiceNumber}&codigo_motivo=${codigoMotivo}&customer_id=2&branch_id=1&pos_id=1`;
+            const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/number/?invoice_number=${invoiceNumber}&codigo_motivo=${codigoMotivo}&customer_id=1&branch_id=1&pos_id=1`;
             axios
                 .delete(apiUrl)
                 .then((response) => {
@@ -345,8 +325,7 @@ export default function PlaceOrderScreen() {
 
     const handleGoOnline = () => {
         if (eventId) {
-            // Construct the URL with event_id
-            const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/operations/events/end?event_id=${eventId}&customer_id=2&branch_id=1&pos_id=1`;
+            const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/operations/events/end?event_id=${eventId}&customer_id=1&branch_id=1&pos_id=1`;
 
             axios
                 .patch(apiUrl)
@@ -368,6 +347,13 @@ export default function PlaceOrderScreen() {
         } else {
             alert('Event ID is not available.');
         }
+    };
+
+    const handleCreditCardChange = (event) => {
+        const newValue = event.target.value;
+        setCreditCardNumber(newValue);
+        console.log(newValue);
+        console.log(creditCardNumber);
     };
 
         const handleBuscarCliente = async () => {
@@ -405,19 +391,15 @@ export default function PlaceOrderScreen() {
 
     const handleEmitirFacturasGuardadas = () => {
         if (eventId) {
-            // Construct the URL with event_id
-            const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/offline?customer_id=2&doc_sector=17&event_id=${eventId}&branch_id=1&pos_id=1`;
+            const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/offline?customer_id=1&doc_sector=17&event_id=${eventId}&branch_id=1&pos_id=1`;
 
             axios
                 .post(apiUrl)
                 .then((response) => {
                     if (response.status === 200) {
-                        // Successfully received the response
-                        // Handle the response data here if needed
                         const transaccion = response.data.siat_response.transaccion;
                         const invoices = response.data.batch.invoices.invoices;
 
-                        // Display an alert with the extracted values
                         alert(`Transaccion: ${transaccion}\nFacturas enviadas: ${invoices}`);
                     } else {
                         // Handle the error
@@ -449,8 +431,8 @@ export default function PlaceOrderScreen() {
             cantidad: item.qty,
             unidadMedida: 58,
             precioUnitario: item.price,
-            montoDescuento: discounts[item.id] || 0,
-            subTotal: (item.qty * item.price * (1 - (discounts[item.id] || 0) / 100)).toFixed(2),
+            montoDescuento: (item.qty * item.price * ((discounts[item.id] || 0) / 100)).toFixed(2),
+            subTotal: (item.qty * item.price - (item.qty * item.price * ((discounts[item.id] || 0) / 100))).toFixed(2),
             especialidad: item.especialidad,
             especialidadDetalle: item.especialidadDetalle,
             nroQuirofanoSalaOperaciones: item.nroQuirofanoSalaOperaciones,
@@ -461,45 +443,34 @@ export default function PlaceOrderScreen() {
             nroFacturaMedico: item.nroFacturaMedico,
         }));
 
-        const handleEditarClick = () => {
-            // Specify the URL you want to open in the emergent window
-            const url = '/shipping'; // Change this URL to the desired one
-
-            // Open the emergent window
-            window.open(url, '_blank');
-        };
-
-
-
-
         const params = {
             codigo_metodo_pago: paymentMethod,
-            monto_total: calculateUpdatedSubtotal()-additionalDiscount,
-            monto_total_sujeto_iva: calculateUpdatedSubtotal()-additionalDiscount,
+            monto_total: calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100)),
+            monto_total_sujeto_iva: calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100)),
             codigo_moneda: 1,
             tipo_cambio: 1,
-            monto_total_moneda: calculateUpdatedSubtotal()-additionalDiscount,
+            monto_total_moneda: calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100)),
             monto_gift_card: null,
-            descuento_adicional: additionalDiscount,
+            descuento_adicional: (calculateUpdatedSubtotal()*(additionalDiscount/100)),
             usuario: "string",
+            numero_tarjeta: creditCardNumber,
         };
-
-        const nombre_paciente = nombrePaciente;
-
-
 
 
 
         const jsonObject = {
             details,
-            nombre_paciente,
+            nombre_paciente: nombre_paciente,
             params,
         };
+
+        const mapiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=1&client_id=${client_id}&is_offline=${isOffline ? 1 : 0}`;
+
 
 
         axios
             .post(
-                apiUrl,
+                mapiUrl,
                 jsonObject,
                 {
                     headers: {
@@ -514,6 +485,7 @@ export default function PlaceOrderScreen() {
                     alert(response.data.status);
                     alert(`El número de factura es: ${response.data.invoice_number}`);
                     alert(response.data.id);
+                    setNombre_paciente('');
                 } else {
                     // Handle the error
                     alert('Failed to send invoice. Please try again.');
@@ -542,13 +514,13 @@ export default function PlaceOrderScreen() {
                         <div className="card  p-5">
                             <div className="mb-3">
                                 <h2 className="mb-2 text-lg"><b>Datos del Paciente</b></h2>
-                                <label htmlFor="paymentMethod" className="form-label">Nombre del Paciente :</label>
+                                <label className="form-label">Nombre del Paciente :</label>
                                 <input
                                     type="text"
-                                    id="nombrePaciente"
+                                    id="nombre_paciente"
                                     className="form-control"
-                                    value={nombrePaciente}
-                                    onChange={(e) => setNombrePaciente(e.target.value)}
+                                    value={nombre_paciente}
+                                    onChange={(e) => setNombre_paciente(e.target.value)}
                                 />
                             </div>
                             <button onClick={handleNombrePaciente} className="primary-button" >Registrar</button>
@@ -575,8 +547,13 @@ export default function PlaceOrderScreen() {
                                     <div className="mb-3">
                                         <label htmlFor="creditCardNumber" className="form-label">Número de tarjeta de crédito </label>
                                         <input
-                                            type="text"
+                                            type="tel"
+                                            inputmode="numeric"
                                             id="creditCardNumber"
+                                            pattern="[0-9\s]{13,19}"
+                                            autocomplete="cc-number"
+                                            maxlength="19"
+                                            placeholder="xxxx xxxx xxxx xxxx"
                                             className="form-control"
                                             value={creditCardNumber}
                                             onChange={handleCreditCardChange}
@@ -634,6 +611,9 @@ export default function PlaceOrderScreen() {
                                     <p>No se encontró ningún cliente.</p>
                                     </div>
                                 )}
+                                <div>
+                                    <button onClick={handleEstablecerCliente} className="primary-button">Establecer cliente</button>
+                                </div>
 
                             </div>
                         <div className="bg-white p-4 rounded shadow">

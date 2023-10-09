@@ -13,21 +13,40 @@ import axios from 'axios';
 import ProductItem from "@/components/ProductItem";
 import {data} from "@/utils/data";
 import { saveAs } from 'file-saver';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 
 
 
 export default function PlaceOrderScreen() {
+    const [foundClient, setFoundClient] = useState('');
+
     const { products } = data;
 
-    const [nombrePaciente, setNombrePaciente] = useState('');
+    const [isOnline, setIsOnline] = useState(true);
+
+    const ledClass = isOnline ? 'Online' : 'Offline';
+
+    useEffect(() => {
+        const checkOnlineStatus = () => {
+            setIsOnline(window.navigator.onLine);
+        };
+
+        checkOnlineStatus();
+
+        const intervalId = setInterval(checkOnlineStatus, 10000);
+
+        return () => {
+            clearInterval(intervalId); // Cleanup the interval
+        };
+    }, []);
 
 
 
-    const handleNombrePaciente = (event) => {
-        const newValue = event.target.value;
-        setNombrePaciente(newValue);
-    };
+
 
 
     const handleClearCart = () => {
@@ -37,6 +56,7 @@ export default function PlaceOrderScreen() {
     const removeFromCartHandler = (id) => {
         dispatch(removeFromCart(id))
     }
+
 
     const addToCartHandler = async (product, qty) => {
         dispatch(addToCart({ ...product, qty }))
@@ -61,7 +81,9 @@ export default function PlaceOrderScreen() {
         const url = '/shipping'; // Replace with the correct URL
         const windowFeatures = 'width=600,height=600,scrollbars=yes,resizable=yes';
         const newWindow = window.open(url, '_blank', windowFeatures);
+
         setEditWindow(newWindow);
+
     };
 
     const closeEditWindow = () => {
@@ -94,6 +116,19 @@ export default function PlaceOrderScreen() {
         setSelectedPaymentMethod(newValue);
     };
 
+    const handleImprimirFactura = (event) => {
+        const myUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/pdf?invoice_number=${invoicePrintNumber}&customer_id=1`;
+        axios.get(myUrl, { responseType: 'blob' })
+            .then ((response) => {
+                const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+                const filename = `invoice_${invoicePrintNumber}.pdf`;
+                saveAs(pdfBlob, filename);
+            })
+            .catch((error) => {
+                console.error('Error descargando el PDF :', error);
+            });
+    };
+
     const submitHandler = () => {
         // Store the selected payment method in Redux
         dispatch(savePaymentMethod(selectedPaymentMethod));
@@ -102,46 +137,15 @@ export default function PlaceOrderScreen() {
 
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('1');
     const [creditCardNumber, setCreditCardNumber] = useState('');
+    const [nombre_paciente, setNombre_paciente] = useState('');
 
-    const actividadEconomica = "862010";
-    const codigoProductoSin = 99100;
-    const codigoProducto = "";
-    const descripcion = "";
-    const unidadMedida = 58;
-    const precioUnitario = null; // Set the fixed value of 65.0
-    const montoDescuento = null;
-    const especialidad = "";
-    const especialidadDetalle = "";
-    const nroQuirofanoSalaOperaciones = null;
-    const especialidadMedico = "";
-    const nombreApellidoMedico = "Medicmel";
-    const nitDocumentoMedico = 392010028;
-    const nroMatriculaMedico = "";
-    const nroFacturaMedico = null;
 
-    // Calculate the values based on cartItems
-    const cantidad = cartItems.reduce((total, item) => total + item.qty, 0);
-    const subTotal = null;
-    const monto_total_moneda = null;
-    const monto_total = null;
-    const monto_total_sujeto_iva = null;
-
-    // Define the params object
-    const params = {
-        codigo_metodo_pago: null,
-        monto_total: null,
-        monto_total_sujeto_iva: null,
-        codigo_moneda: 1,
-        tipo_cambio: 1,
-        monto_total_moneda: null,
-        monto_gift_card: null,
-        descuento_adicional: null,
-        leyenda: "",
-        usuario: "",
-    };
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [discounts, setDiscounts] = useState({});
 
+    const [clientData, setClientData] = useState(null);
+
+    const [creditCard, setCreditCard] = useState(null);
 
 
 
@@ -156,7 +160,7 @@ export default function PlaceOrderScreen() {
         const formattedStartDate = new Date(startDate).toISOString();
 
 
-        const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/reports/?start_date=${encodeURIComponent(formattedStartDate)}&customer_id=2`;
+        const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/reports/?start_date=${encodeURIComponent(formattedStartDate)}&customer_id=1`;
 
         axios
             .get(apiUrl, {
@@ -181,8 +185,9 @@ export default function PlaceOrderScreen() {
     const calculateUpdatedSubtotal = () => {
         let updatedSubtotal = 0;
         cartItems.forEach((item) => {
-            const discount = discounts[item.id] || 0;
-            updatedSubtotal += item.qty * item.price - discount;
+            const discountPercentage = discounts[item.id] || 0;
+            const discountedAmount = (item.qty * item.price * (1 - discountPercentage / 100));
+            updatedSubtotal += discountedAmount;
         });
         return updatedSubtotal.toFixed(2);
     };
@@ -195,6 +200,8 @@ export default function PlaceOrderScreen() {
 
     const [apiUrl, setApiUrl] = useState('');
 
+    const [apixUrl, setApixUrl] = useState('')
+
     const toggleIsOffline = () => {
         setIsOffline((prevIsOffline) => !prevIsOffline);
         console.log(apiUrl);
@@ -206,27 +213,47 @@ export default function PlaceOrderScreen() {
         setAdditionalDiscount(parseFloat(value));
     };
 
+    const handleNombrePaciente = (event) => {
+        console.log('Nombre del Paciente:', nombre_paciente);
+        toast.success('Nombre del paciente registrado.');
+    };
+
     const [codigoMotivo, setCodigoMotivo] = useState('1');
-    const [invoiceId, setInvoiceId] = useState('');
+    const [invoiceNumber, setInvoiceNumber] = useState('');
+    const [invoicePrintNumber, setInvoicePrintNumber] = useState('');
 
     const router = useRouter()
 
 
 
+    const user_id= useSelector((state) => state.cart.userId);
+    let client_id = foundClient.id;
+
     useEffect(() => {
-        const newApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=${user_id}&customer_id=2&client_id=${client_id}&is_offline=${isOffline ? 1 : 0}`;
+        const newApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=1&client_id=${client_id}&is_offline=${isOffline ? 1 : 0}`;
         setApiUrl(newApiUrl);
-    }, [isOffline]);
+    }, [client_id]);
+
+    useEffect(() => {
+        const nuevoApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=1&client_id=${client_id}&is_offline=${isOffline ? 1 : 0}`;
+        setApixUrl(nuevoApiUrl);
+    }, [client_id, isOffline]);
+
+    const handleEstablecerCliente = () => {
+        if (foundClient) {
+            client_id = foundClient.id;
+            console.log(client_id);
+        } else {
+            console.log("No hay ese cliente!")
+        };
+    };
 
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
 
     const dispatch = useDispatch();
 
-    const [eventId, setEventId] = useState(null);
-
-    const user_id = useSelector((state) => state.cart.userId);
-    const client_id = useSelector((state) => state.cart.userId);
+    const [eventId, setEventId] = useState('1');
 
     const handleServicioWebNoDisponible = () => {
 
@@ -239,7 +266,7 @@ export default function PlaceOrderScreen() {
 
         axios
             .post(
-                `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/operations/events/start?customer_id=2&branch_id=1&pos_id=1`,
+                `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/operations/events/start?customer_id=1&branch_id=1&pos_id=1`,
                 payload,
                 {
                     headers: {
@@ -274,9 +301,8 @@ export default function PlaceOrderScreen() {
     };
 
     const handleAnularFactura = () => {
-        if (invoiceId) {
-            const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit?invoice_id=${invoiceId}&codigo_motivo=${codigoMotivo}&customer_id=2&branch_id=1&pos_id=1`;
-
+        if (invoiceNumber) {
+            const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/number/?invoice_number=${invoiceNumber}&codigo_motivo=${codigoMotivo}&customer_id=1&branch_id=1&pos_id=1`;
             axios
                 .delete(apiUrl)
                 .then((response) => {
@@ -299,8 +325,7 @@ export default function PlaceOrderScreen() {
 
     const handleGoOnline = () => {
         if (eventId) {
-            // Construct the URL with event_id
-            const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/operations/events/end?event_id=${eventId}&customer_id=2&branch_id=1&pos_id=1`;
+            const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/operations/events/end?event_id=${eventId}&customer_id=1&branch_id=1&pos_id=1`;
 
             axios
                 .patch(apiUrl)
@@ -324,21 +349,57 @@ export default function PlaceOrderScreen() {
         }
     };
 
+    const handleCreditCardChange = (event) => {
+        const newValue = event.target.value;
+        setCreditCardNumber(newValue);
+        console.log(newValue);
+        console.log(creditCardNumber);
+    };
+
+    const handleBuscarCliente = async () => {
+        try {
+            const response = await axios.get('https://dev-core-invoice-service-q642kqwota-uc.a.run.app/clients/', {
+                headers: {
+                    Accept: 'application/json',
+                },
+            });
+
+            if (response.status === 200) {
+                const clients = response.data;
+
+                // Use the value from the input field as the search field
+                const foundClient = clients.find((client) => client.numero_documento === searchField);
+
+                if (foundClient) {
+                    console.log('Found Client:', foundClient);
+                    setFoundClient(foundClient);
+                } else {
+                    console.log('Client not found');
+                    setFoundClient(null);
+                }
+
+            } else {
+                console.error('Failed to fetch client data');
+            }
+        } catch (error) {
+            console.error('Error fetching client data:', error);
+        }
+    };
+
+
+
+
     const handleEmitirFacturasGuardadas = () => {
         if (eventId) {
-            // Construct the URL with event_id
-            const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/offline?customer_id=2&doc_sector=17&event_id=${eventId}&branch_id=1&pos_id=1`;
+            const apiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/offline?customer_id=1&doc_sector=17&event_id=${eventId}&branch_id=1&pos_id=1`;
 
             axios
                 .post(apiUrl)
                 .then((response) => {
                     if (response.status === 200) {
-                        // Successfully received the response
-                        // Handle the response data here if needed
                         const transaccion = response.data.siat_response.transaccion;
                         const invoices = response.data.batch.invoices.invoices;
 
-                        // Display an alert with the extracted values
                         alert(`Transaccion: ${transaccion}\nFacturas enviadas: ${invoices}`);
                     } else {
                         // Handle the error
@@ -354,15 +415,13 @@ export default function PlaceOrderScreen() {
         }
     };
 
-
+    const [searchField, setSearchField] = useState('');
 
 
     const handleEnviarFactura = () => {
         setIsSubmitting(true);
 
         setSuccessMessage('');
-
-        const nombre_paciente = nombrePaciente;
 
         const details = cartItems.map((item) => ({
             actividadEconomica: "862010",
@@ -372,8 +431,8 @@ export default function PlaceOrderScreen() {
             cantidad: item.qty,
             unidadMedida: 58,
             precioUnitario: item.price,
-            montoDescuento: discounts[item.id] || 0,
-            subTotal: (item.qty * item.price - (discounts[item.id] || 0)).toFixed(2),
+            montoDescuento: (item.qty * item.price * ((discounts[item.id] || 0) / 100)).toFixed(2),
+            subTotal: (item.qty * item.price - (item.qty * item.price * ((discounts[item.id] || 0) / 100))).toFixed(2),
             especialidad: item.especialidad,
             especialidadDetalle: item.especialidadDetalle,
             nroQuirofanoSalaOperaciones: item.nroQuirofanoSalaOperaciones,
@@ -384,40 +443,34 @@ export default function PlaceOrderScreen() {
             nroFacturaMedico: item.nroFacturaMedico,
         }));
 
-        const handleEditarClick = () => {
-            // Specify the URL you want to open in the emergent window
-            const url = '/shipping'; // Change this URL to the desired one
-
-            // Open the emergent window
-            window.open(url, '_blank');
-        };
-
-
         const params = {
             codigo_metodo_pago: paymentMethod,
-            monto_total: calculateUpdatedSubtotal()-additionalDiscount,
-            monto_total_sujeto_iva: calculateUpdatedSubtotal()-additionalDiscount,
+            monto_total: calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100)),
+            monto_total_sujeto_iva: calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100)),
             codigo_moneda: 1,
             tipo_cambio: 1,
-            monto_total_moneda: calculateUpdatedSubtotal()-additionalDiscount,
+            monto_total_moneda: calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100)),
             monto_gift_card: null,
-            descuento_adicional: additionalDiscount,
+            descuento_adicional: (calculateUpdatedSubtotal()*(additionalDiscount/100)),
             usuario: "string",
+            numero_tarjeta: creditCardNumber,
         };
-
 
 
 
         const jsonObject = {
             details,
-            nombre_paciente,
+            nombre_paciente: nombre_paciente,
             params,
         };
+
+        const mapiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=1&client_id=${client_id}&is_offline=${isOffline ? 1 : 0}`;
+
 
 
         axios
             .post(
-                apiUrl,
+                mapiUrl,
                 jsonObject,
                 {
                     headers: {
@@ -432,6 +485,7 @@ export default function PlaceOrderScreen() {
                     alert(response.data.status);
                     alert(`El número de factura es: ${response.data.invoice_number}`);
                     alert(response.data.id);
+                    setNombre_paciente('');
                 } else {
                     // Handle the error
                     alert('Failed to send invoice. Please try again.');
@@ -448,7 +502,6 @@ export default function PlaceOrderScreen() {
 
     return (
         <div>
-            <CheckoutWizard activeStep={2} />
             <h1 className="mb-4 text-xl font-bold">
                 <b>Sistema de facturación electrónica</b>
             </h1>
@@ -458,6 +511,59 @@ export default function PlaceOrderScreen() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 lg:grid-cols-4">
                     {/* Left Column */}
                     <div className="col-span-1 md:col-span-1">
+                        <div className="card  p-5">
+                            <div className="mb-3">
+                                <h2 className="mb-2 text-lg"><b>Datos del Paciente</b></h2>
+                                <label className="form-label">Nombre del Paciente :</label>
+                                <input
+                                    type="text"
+                                    id="nombre_paciente"
+                                    className="form-control"
+                                    value={nombre_paciente}
+                                    onChange={(e) => setNombre_paciente(e.target.value)}
+                                />
+                            </div>
+                            <button onClick={handleNombrePaciente} className="primary-button" >Registrar</button>
+                        </div>
+                        <div className="card  p-5">
+                            <h2 className="mb-2 text-lg"><b>Método de Pago</b></h2>
+                            <div>{paymentMethod}</div>
+                            <div>
+                                <div className="mb-3">
+                                    <label htmlFor="paymentMethod" className="form-label">Tipo de método de pago</label>
+                                    <select
+                                        id="paymentMethod"
+                                        className="form-select"
+                                        value={selectedPaymentMethod}
+                                        onChange={handlePaymentMethodChange}
+                                    >
+                                        <option value="1" selected>Efectivo</option>
+                                        <option value="2">Tarjeta</option>
+                                        <option value="7">Transferencia bancaria</option>
+                                        <option value="10">Tarjeta y Efectivo</option>
+                                    </select>
+                                </div>
+                                {selectedPaymentMethod === "2" && (
+                                    <div className="mb-3">
+                                        <label htmlFor="creditCardNumber" className="form-label">Número de tarjeta de crédito </label>
+                                        <input
+                                            type="tel"
+                                            inputmode="numeric"
+                                            id="creditCardNumber"
+                                            pattern="[0-9\s]{13,19}"
+                                            autocomplete="cc-number"
+                                            maxlength="19"
+                                            placeholder="xxxx xxxx xxxx xxxx"
+                                            className="form-control"
+                                            value={creditCardNumber}
+                                            onChange={handleCreditCardChange}
+                                        />
+                                    </div>
+                                )}
+                                <button onClick={submitHandler} className="primary-button" >Registrar</button>
+                            </div>
+
+                        </div>
                         <div className="p-4">
                             {/* Search input */}
                             <input
@@ -481,6 +587,35 @@ export default function PlaceOrderScreen() {
 
                     {/* Middle Column */}
                     <div className="md:col-span-2 col-span-4">
+                        <div className="card p-5">
+                            <h2 className="mb-2 text-lg"><b>Datos del cliente</b></h2>
+                            <div className="text-right">
+                                <button onClick={openEditWindow} className="primary-button mb-2 mr-3">Editar y guardar</button>
+                                <input
+                                    type="text"
+                                    placeholder="Escriba datos..."
+                                    value={searchField}
+                                    onChange={(e) => setSearchField(e.target.value)}
+                                    className="mb-3"
+                                />
+                                <button onClick={handleBuscarCliente} className="primary-button">Buscar cliente venta</button>
+                            </div>
+                            {foundClient !== null ? (
+                                <div className="found-client">
+                                    <h3>Cliente encontrado: </h3>
+                                    <p>ID: {foundClient.id}</p>
+                                    <p>Nombre: {foundClient.nombre_razon_social}</p>
+                                </div>
+                            ) : (
+                                <div className="no-client-found">
+                                    <p>No se encontró ningún cliente.</p>
+                                </div>
+                            )}
+                            <div>
+                                <button onClick={handleEstablecerCliente} className="primary-button">Establecer cliente</button>
+                            </div>
+
+                        </div>
                         <div className="bg-white p-4 rounded shadow">
                             <h2 className="text-xl font-semibold">Resumen de Venta de Artículos</h2>
                             <div>
@@ -505,7 +640,7 @@ export default function PlaceOrderScreen() {
                                                     <th className="p-5 text-right">Cantidad</th>
                                                     <th className="p-5 text-right">Precio</th>
                                                     <th className="p-5">Acción</th>
-                                                    <th className="p-5">Descuento</th>
+                                                    <th className="p-5">Descuento %</th>
                                                     <th className="p-5">Subtotal</th>
                                                 </tr>
                                                 </thead>
@@ -525,18 +660,14 @@ export default function PlaceOrderScreen() {
                                                             </a>
                                                         </td>
                                                         <td className="p-5 text-right">
-                                                            <select
+                                                            <input
+                                                                type="number"
                                                                 value={item.qty}
-                                                                onChange={(e) =>
-                                                                    addToCartHandler(item, Number(e.target.value))
-                                                                }
-                                                            >
-                                                                {[...Array(item.countInStock).keys()].map((x) => (
-                                                                    <option key={x + 1} value={x + 1}>
-                                                                        {x + 1}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
+                                                                onChange={(e) => {
+                                                                    const newValue = Math.max(1, Number(e.target.value));
+                                                                    addToCartHandler(item, newValue);
+                                                                }}
+                                                            />
                                                         </td>
                                                         <td className="p-5 text-right">Bs. {item.price}</td>
                                                         <td className="p-5 text-center">
@@ -550,13 +681,14 @@ export default function PlaceOrderScreen() {
                                                         <td className="p-5 text-right">
                                                             <input
                                                                 type="number"
+                                                                min="0"
                                                                 value={discounts[item.id] || ''}
                                                                 onChange={(e) => handleItemDiscountChange(item.id, e.target.value)}
                                                                 className="w-16 border rounded p-1 text-right"
                                                             />
                                                         </td>
                                                         <td className="p-5 text-right">
-                                                            Bs. {(item.qty * item.price - (discounts[item.id] || 0)).toFixed(2)}
+                                                            Bs. {(item.qty * item.price * (1 - (discounts[item.id] || 0) / 100)).toFixed(2)}
                                                         </td>
                                                     </tr>
                                                 ))}
@@ -567,62 +699,8 @@ export default function PlaceOrderScreen() {
                                 )}
                             </div>
                         </div>
-                        <div className="card p-5">
-                            <h2 className="mb-2 text-lg"><b>Datos del cliente</b></h2>
-                            <div> {/* Add the 'text-right' class here */}
-                                <button onClick={openEditWindow} className="primary-button">Editar</button>
-                                <div className="text-right">
-                                    El ID del cliente es {client_id}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="card  p-5">
-                            <h2 className="mb-2 text-lg"><b>Método de Pago</b></h2>
-                            <div>{paymentMethod}</div>
-                            <div>
-                                <div className="mb-3">
-                                    <label htmlFor="paymentMethod" className="form-label">Tipo de método de pago</label>
-                                    <select
-                                        id="paymentMethod"
-                                        className="form-select"
-                                        value={selectedPaymentMethod}
-                                        onChange={handlePaymentMethodChange}
-                                    >
-                                        <option value="1" selected>Efectivo</option>
-                                        <option value="2">Tarjeta</option>
-                                        <option value="7">Transferencia bancaria</option>
-                                        <option value="10">Tarjeta y Efectivo</option>
-                                    </select>
-                                </div>
-                                {selectedPaymentMethod === "2" && (
-                                    <div className="mb-3">
-                                        <label htmlFor="creditCardNumber" className="form-label">Número de tarjeta de crédito </label>
-                                        <input
-                                            type="text"
-                                            id="creditCardNumber"
-                                            className="form-control"
-                                            value={creditCardNumber}
-                                            onChange={handleCreditCardChange}
-                                        />
-                                    </div>
-                                )}
-                                <button onClick={submitHandler} className="primary-button" >Registrar</button>
-                            </div>
-                        </div>
-                        <div className="card  p-5">
-                            <div className="mb-3">
-                                <h2 className="mb-2 text-lg"><b>Datos del Paciente</b></h2>
-                                <label htmlFor="paymentMethod" className="form-label">Nombre del Paciente :</label>
-                                <input
-                                    type="text"
-                                    id="nombrePaciente"
-                                    className="form-control"
-                                    value={nombrePaciente}
-                                    onChange={handleNombrePaciente}
-                                />
-                            </div>
-                            <button onClick={submitHandler} className="primary-button" >Registrar</button>
-                        </div>
+
+
                     </div>
 
 
@@ -632,6 +710,12 @@ export default function PlaceOrderScreen() {
                             <h2 className="mb-2 text-lg"><b>Resumen de Facturación</b></h2>
                             <ul>
                                 <li>
+                                    <div>
+                                        <p>Estado del Internet: {ledClass}</p>
+                                        {/* Other content */}
+                                    </div>
+                                </li>
+                                <li>
                                     <div className="mb-2 flex justify-between">
                                         <div>SubTotal</div>
                                         <div>Bs. {calculateUpdatedSubtotal()}</div>
@@ -639,10 +723,11 @@ export default function PlaceOrderScreen() {
                                 </li>
                                 <li>
                                     <div className="mb-2 flex justify-between">
-                                        <div>Descuento Adicional</div>
+                                        <div>Porcentaje descuento adicional %</div>
                                         <div>
                                             <input
                                                 type="number"
+                                                min="0"
                                                 value={additionalDiscount}
                                                 onChange={(e) => handleAdditionalDiscountChange(e.target.value)}
                                                 className="w-16 border rounded p-1 text-right"
@@ -653,13 +738,15 @@ export default function PlaceOrderScreen() {
                                 <li>
                                     <div className="mb-2 flex justify-between">
                                         <div>SubTotal con Descuento</div>
-                                        <div>Bs. {(calculateUpdatedSubtotal() - additionalDiscount).toFixed(2)}</div>
+                                        <div>Bs. {((calculateUpdatedSubtotal() * (1 - additionalDiscount / 100)).toFixed(2))}</div>
+
                                     </div>
                                 </li>
                                 <li>
                                     <div className="mb-2 flex justify-between">
                                         <div>Monto Total</div>
-                                        <div>Bs. {(calculateUpdatedSubtotal() - additionalDiscount).toFixed(2)}</div>
+                                        <div>Bs. {((calculateUpdatedSubtotal() * (1 - additionalDiscount / 100)).toFixed(2))}</div>
+
                                     </div>
                                 </li>
                                 <li>
@@ -702,23 +789,50 @@ export default function PlaceOrderScreen() {
                                         </button>
                                     </div>
                                 </li>
-                                <ul>
+                                <li>
                                     <div className="mb-2 flex justify-between">
                                         <button onClick={handleEmitirFacturasGuardadas} className="primary-button w-full">
                                             Emitir facturas guardadas
                                         </button>
                                     </div>
-                                </ul>
+                                </li>
+
+                            </ul>
+                            <ul>
 
                             </ul>
                         </div>
                         <div className="card  p-5">
+                            <div className="mb-3">
+                                <h2 className="mb-2 text-lg"><b>Imprimir Factura</b></h2>
+                                <ol>
+
+                                    <div className="flex items-center"> {/* Add flex and items-center to center elements vertically */}
+                                        <div>Número de factura :</div>
+                                        <input
+                                            type="number"
+                                            value={invoicePrintNumber}
+                                            onChange={(e) => setInvoicePrintNumber(e.target.value)}
+                                            className="border rounded p-1 ml-2"
+                                            placeholder="Número de la factura..."
+                                        />
+                                    </div>
+                                </ol>
+                                <ul>
+                                    <div className="mb-2 flex justify-between">
+                                        <button onClick={handleImprimirFactura} className="primary-button w-full">
+                                            Imprimir Factura
+                                        </button>
+                                    </div>
+                                </ul>
+                            </div>
                         </div>
 
 
                     </div>
                 </div>
             )}
+            <ToastContainer />
         </div>
     )
 }

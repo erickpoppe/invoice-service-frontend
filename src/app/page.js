@@ -34,7 +34,7 @@ export default function Home() {
                 if (response.data.status === 'OK') {
                     const role = response.data.role;
                     if (role === 'ADMIN') {
-                        toast.success('Login successful as ADMIN', {
+                        toast.success('Login exitoso como ADMIN', {
                             autoClose: 3000,
                             onClose: () => {
                                 dispatch(saveUserId(1));
@@ -42,15 +42,23 @@ export default function Home() {
                             },
                         });
                     } else if (role === 'OPERATOR') {
-                        toast.success('Login successful as OPERATOR', {
+                        toast.success('Login exitoso como OPERATOR', {
                             autoClose: 3000,
                             onClose: () => {
                                 router.push('/placeorderop');
                                 dispatch(saveUserId(4));
                             },
                         });
+                    } else if (role === 'READONLY') {
+                        toast.success('Login exitoso como FARMACIA', {
+                            autoclose: 30000,
+                            onClose: () => {
+                                router.push('/farmaciaop');
+                                dispatch(saveUserId(5))
+                            },
+                        });
                     } else {
-                        toast.error('Login failed due to an unknown role', { autoClose: 3000 });
+                        toast.error('Login falló por login desconocido', { autoClose: 3000 });
                     }
                 } else {
                     toast.error('Login failed', { autoClose: 3000 });
