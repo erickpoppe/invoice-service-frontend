@@ -12,7 +12,7 @@ import {addToCart, removeFromCart, savePaymentMethod, clearCart} from '../../red
 import React, { useState } from 'react';
 import axios from 'axios';
 import ProductItem from "@/components/ProductItem";
-import {data} from "@/utils/data";
+import {datos} from "@/utils/datos";
 import { saveAs } from 'file-saver';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -26,7 +26,7 @@ export default function PlaceOrderScreen() {
     const [foundClient, setFoundClient] = useState('');
 
 
-    const { products } = data;
+    const { products } = datos;
 
     const [isOnline, setIsOnline] = useState(true);
 
@@ -526,20 +526,6 @@ export default function PlaceOrderScreen() {
                     {/* Left Column */}
                     <div className="col-span-1 md:col-span-1">
                         <div className="card  p-5">
-                            <div className="mb-3">
-                                <h2 className="mb-2 text-lg"><b>Datos del Paciente</b></h2>
-                                <label className="form-label">Nombre del Paciente :</label>
-                                <input
-                                    type="text"
-                                    id="nombre_paciente"
-                                    className="form-control"
-                                    value={nombre_paciente}
-                                    onChange={(e) => setNombre_paciente(e.target.value)}
-                                />
-                            </div>
-                            <button onClick={handleNombrePaciente} className="primary-button" >Registrar</button>
-                        </div>
-                        <div className="card  p-5">
                             <h2 className="mb-2 text-lg"><b>Método de Pago</b></h2>
                             <div>{paymentMethod}</div>
                             <div>
@@ -813,6 +799,72 @@ export default function PlaceOrderScreen() {
 
                             </ul>
                             <ul>
+                                <div className="card p-5">
+                                    <div>
+                                        <h2 className="mb-2 text-lg"><b>Anular factura</b></h2>
+                                        <ul>
+                                            <li className="mb-4"> {/* Add margin to create separation */}
+                                                <div className="flex justify-between items-center">
+                                                    <div className="flex items-center"> {/* Add flex and items-center to center elements vertically */}
+                                                        <input
+                                                            type="text"
+                                                            value={invoiceNumber}
+                                                            onChange={(e) => setInvoiceNumber(e.target.value)}
+                                                            className="border rounded p-1 ml-2 w-full"
+                                                            placeholder="Número de la factura..."
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div className="mb-4 flex justify-between items-center"> {/* Add margin and center elements vertically */}
+                                                    <select
+                                                        value={codigoMotivo}
+                                                        onChange={(e) => setCodigoMotivo(e.target.value)}
+                                                        className="border rounded p-1 w-full"
+                                                    >
+                                                        <option value="1">FACTURA MAL EMITIDA</option>
+                                                        <option value="2">NOTA DE CREDITO-DEBITO MAL EMITIDA</option>
+                                                        <option value="3">DATOS DE EMISION INCORRECTOS</option>
+                                                        <option value="4">FACTURA O NOTA DE CREDITO-DEBITO DEVUELTA</option>
+                                                    </select>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <div className="flex justify-center"> {/* Center the button */}
+                                            <button onClick={handleAnularFactura} className="primary-button w-full">
+                                                Anular Factura
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <ol>
+                                            <h2 className="mb-2 text-lg"><b>Emitir reportes</b></h2>
+                                            <li className="mb-4"> {/* Add margin to create separation */}
+                                                <div className="flex justify-between items-center">
+                                                    <div className="mb-2">
+                                                        <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
+                                                            Fecha de inicio
+                                                        </label>
+                                                        <input
+                                                            type="datetime-local" // Use datetime-local type
+                                                            id="startDate"
+                                                            name="startDate"
+                                                            className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                                                            value={startDate}
+                                                            onChange={(e) => setStartDate(e.target.value)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ol>
+                                        <div className="flex justify-center"> {/* Center the button */}
+                                            <button onClick={handleRetrieveData} className="primary-button w-full">
+                                                Emitir reporte
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
 
                             </ul>
                         </div>

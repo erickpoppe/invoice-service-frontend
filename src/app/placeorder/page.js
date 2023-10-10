@@ -1,4 +1,5 @@
-    'use client'
+'use client'
+
 import CheckoutWizard from '@/components/CheckoutWizard'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -23,6 +24,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function PlaceOrderScreen() {
     const [foundClient, setFoundClient] = useState('');
+
 
     const { products } = data;
 
@@ -51,6 +53,12 @@ export default function PlaceOrderScreen() {
 
     const handleClearCart = () => {
         dispatch(clearCart());
+    };
+
+    const handleLogout = () => {
+        dispatch(clearCart());
+        router.push('/');
+
     };
 
     const removeFromCartHandler = (id) => {
@@ -136,7 +144,7 @@ export default function PlaceOrderScreen() {
     };
 
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('1');
-    const [creditCardNumber, setCreditCardNumber] = useState('');
+    const [creditCardNumber, setCreditCardNumber] = useState(null);
     const [nombre_paciente, setNombre_paciente] = useState('');
 
 
@@ -445,13 +453,13 @@ export default function PlaceOrderScreen() {
 
         const params = {
             codigo_metodo_pago: paymentMethod,
-            monto_total: calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100)),
-            monto_total_sujeto_iva: calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100)),
+            monto_total: (calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100))).toFixed(2),
+            monto_total_sujeto_iva: (calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100))).toFixed(2),
             codigo_moneda: 1,
             tipo_cambio: 1,
-            monto_total_moneda: calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100)),
+            monto_total_moneda: (calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100))).toFixed(2),
             monto_gift_card: null,
-            descuento_adicional: (calculateUpdatedSubtotal()*(additionalDiscount/100)),
+            descuento_adicional: (calculateUpdatedSubtotal()*(additionalDiscount/100)).toFixed(2),
             usuario: "string",
             numero_tarjeta: creditCardNumber,
         };
@@ -505,6 +513,12 @@ export default function PlaceOrderScreen() {
             <h1 className="mb-4 text-xl font-bold">
                 <b>Sistema de facturación electrónica</b>
             </h1>
+            <div className="flex justify-end"> {/* Use flex and justify-end to align the button to the right */}
+                {/* Logout button */}
+                <button className="primary-button" onClick={handleLogout}>
+                    Logout
+                </button>
+            </div>
             {loading ? (
                 <div>Loading</div>
             ) : (

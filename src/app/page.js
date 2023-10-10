@@ -53,7 +53,7 @@ export default function Home() {
                         toast.success('Login exitoso como FARMACIA', {
                             autoclose: 30000,
                             onClose: () => {
-                                router.push('/farmaciaop');
+                                router.push('/placeorderpharm');
                                 dispatch(saveUserId(5))
                             },
                         });
