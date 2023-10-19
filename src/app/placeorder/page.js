@@ -218,7 +218,9 @@ export default function PlaceOrderScreen() {
 
     const [apiUrl, setApiUrl] = useState('');
 
-    const [apixUrl, setApixUrl] = useState('')
+    const [apixUrl, setApixUrl] = useState('');
+
+    const [isAmountTotal, setIsAmountTotal] = useState(false);
 
     const toggleIsOffline = () => {
         setIsOffline((prevIsOffline) => !prevIsOffline);
@@ -229,6 +231,9 @@ export default function PlaceOrderScreen() {
       setIsAmount((prevIsAmount) => !prevIsAmount);
     };
 
+    const toggleIsAmountTotal = () => {
+        setIsAmountTotal((prevIsAmountTotal) => !prevIsAmountTotal);
+    };
 
 
     const handleAdditionalDiscountChange = (value) => {
@@ -748,6 +753,17 @@ export default function PlaceOrderScreen() {
                     <div className="col-span-1 md:col-span-1">
                         <div className="card  p-5">
                             <h2 className="mb-2 text-lg"><b>Resumen de Facturación</b></h2>
+                            <div className="mb-2 flex justify-end">
+                                <label className="inline-flex items-center">
+                                    <span className="mr-2">Por monto</span>
+                                    <input
+                                        type="checkbox"
+                                        checked={isAmountTotal}
+                                        onChange={toggleIsAmountTotal}
+                                        className="form-checkbox h-5 w-5 text-indigo-600"
+                                    />
+                                </label>
+                            </div>
                             <ul>
                                 <li>
                                     <div>
