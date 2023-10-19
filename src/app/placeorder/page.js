@@ -473,7 +473,7 @@ export default function PlaceOrderScreen() {
                 unidadMedida: 58,
                 precioUnitario: item.price,
                 montoDescuento: discount.toFixed(2),
-                subTotal: calculateDiscountedPrice(item.qty, item.price, discounts[item.id] || 0, isAmount).toFixed(2),
+                subTotal: calculateDiscountedPrice(item.qty, item.price, discounts[item.id] || 0, isAmount),
                 especialidad: item.especialidad,
                 especialidadDetalle: item.especialidadDetalle,
                 nroQuirofanoSalaOperaciones: item.nroQuirofanoSalaOperaciones,
@@ -487,13 +487,13 @@ export default function PlaceOrderScreen() {
 
         const params = {
             codigo_metodo_pago: paymentMethod,
-            monto_total: calculateDiscountedSubtotal(isAmountTotal, additionalDiscount).toFixed(2),
-            monto_total_sujeto_iva: calculateDiscountedSubtotal(isAmountTotal, additionalDiscount).toFixed(2),
+            monto_total: calculateDiscountedSubtotal(isAmountTotal, additionalDiscount),
+            monto_total_sujeto_iva: calculateDiscountedSubtotal(isAmountTotal, additionalDiscount),
             codigo_moneda: 1,
             tipo_cambio: 1,
-            monto_total_moneda: calculateDiscountedSubtotal(isAmountTotal, additionalDiscount).toFixed(2),
+            monto_total_moneda: calculateDiscountedSubtotal(isAmountTotal, additionalDiscount),
             monto_gift_card: null,
-            descuento_adicional: (calculateDiscountedSubtotal(isAmountTotal, additionalDiscount) - calculateUpdatedSubtotal()).toFixed(2),
+            descuento_adicional: (calculateUpdatedSubtotal() -calculateDiscountedSubtotal(isAmountTotal, additionalDiscount)).toFixed(2),
             usuario: "string",
             numero_tarjeta: creditCardNumber,
         };
