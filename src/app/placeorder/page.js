@@ -770,7 +770,7 @@ export default function PlaceOrderScreen() {
                             <h2 className="mb-2 text-lg"><b>Resumen de Facturación</b></h2>
                             <div className="mb-2 flex justify-end">
                                 <label className="inline-flex items-center">
-                                    <span className="mr-2">Descuento por monto</span>
+                                    <span className="mr-2">Descuento por el monto</span>
                                     <input
                                         type="checkbox"
                                         checked={isAmountTotal}
