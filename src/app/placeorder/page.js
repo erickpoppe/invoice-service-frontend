@@ -25,6 +25,14 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function PlaceOrderScreen() {
     const [foundClient, setFoundClient] = useState('');
 
+    function calculateDiscountedPrice(quantity, price, discount, isAmount) {
+        if (isAmount) {
+            return (quantity * price - discount).toFixed(2);
+        } else {
+            return (quantity * price * (1 - discount / 100)).toFixed(2);
+        }
+    };
+
 
     const { products } = data;
 
@@ -206,6 +214,8 @@ export default function PlaceOrderScreen() {
 
     const [isOffline, setIsOffline] = useState(false);
 
+    const [isAmount, setIsAmount] = useState(false);
+
     const [apiUrl, setApiUrl] = useState('');
 
     const [apixUrl, setApixUrl] = useState('')
@@ -213,6 +223,10 @@ export default function PlaceOrderScreen() {
     const toggleIsOffline = () => {
         setIsOffline((prevIsOffline) => !prevIsOffline);
         console.log(apiUrl);
+    };
+
+    const toggleIsAmount = () => {
+      setIsAmount((prevIsAmount) => !prevIsAmount);
     };
 
 
@@ -632,6 +646,18 @@ export default function PlaceOrderScreen() {
                             </div>
                         <div className="bg-white p-4 rounded shadow">
                             <h2 className="text-xl font-semibold">Resumen de Venta de Artículos</h2>
+                            <div className="mb-2 flex justify-end">
+                                <label className="inline-flex items-center">
+                                    <span className="mr-2">Por monto</span>
+                                    <input
+                                        type="checkbox"
+                                        checked={isAmount}
+                                        onChange={toggleIsAmount}
+                                        className="form-checkbox h-5 w-5 text-indigo-600"
+                                    />
+                                </label>
+
+                            </div>
                             <div>
                                 <button className="primary-button" onClick={handleClearCart}>Borrar ventas</button>
                             </div>
@@ -702,7 +728,7 @@ export default function PlaceOrderScreen() {
                                                             />
                                                         </td>
                                                         <td className="p-5 text-right">
-                                                            Bs. {(item.qty * item.price * (1 - (discounts[item.id] || 0) / 100)).toFixed(2)}
+                                                            Bs. {calculateDiscountedPrice(item.qty, item.price, discounts[item.id] || 0, isAmount)}
                                                         </td>
                                                     </tr>
                                                 ))}

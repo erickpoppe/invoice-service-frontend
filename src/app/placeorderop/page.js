@@ -94,6 +94,16 @@ export default function PlaceOrderScreen() {
 
     };
 
+    const openEditWindowProd = () => {
+        // Specify the URL and other options for the pop-up window
+        const url = '/shipping'; // Replace with the correct URL
+        const windowFeatures = 'width=600,height=600,scrollbars=yes,resizable=yes';
+        const newWindow = window.open(url, '_blank', windowFeatures);
+
+        setEditWindow(newWindow);
+
+    };
+
     const closeEditWindow = () => {
         if (editWindow) {
             editWindow.close();
@@ -525,6 +535,11 @@ export default function PlaceOrderScreen() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 lg:grid-cols-4">
                     {/* Left Column */}
                     <div className="col-span-1 md:col-span-1">
+                        <div className="card p-5">
+                            <h2 className="mb-2 text-lg"><b>Productos</b></h2>
+                            <button onClick={openEditWindowProd} className="primary-button mb-2 mr-3">Editar y guardar</button>
+
+                        </div>
                         <div className="card  p-5">
                             <div className="mb-3">
                                 <h2 className="mb-2 text-lg"><b>Datos del Paciente</b></h2>
