@@ -809,8 +809,7 @@ export default function PlaceOrderScreen() {
                                 <li>
                                     <div className="mb-2 flex justify-between">
                                         <div>Monto Total</div>
-                                        <div>Bs. {((calculateUpdatedSubtotal() * (1 - additionalDiscount / 100)).toFixed(2))}</div>
-
+                                        <div>Bs. {calculateDiscountedSubtotal(isAmountTotal, additionalDiscount)}</div>
                                     </div>
                                 </li>
                                 <li>
