@@ -204,13 +204,11 @@ export default function PlaceOrderScreen() {
             });
     };
 
-
-
     const calculateUpdatedSubtotal = () => {
         let updatedSubtotal = 0;
         cartItems.forEach((item) => {
-            const discountPercentage = discounts[item.id] || 0;
-            const discountedAmount = (item.qty * item.price * (1 - discountPercentage / 100));
+            const discount = isAmount ? (discounts[item.id] || 0) : (item.qty * item.price * (discounts[item.id] || 0) / 100);
+            const discountedAmount = item.qty * item.price - discount;
             updatedSubtotal += discountedAmount;
         });
         return updatedSubtotal.toFixed(2);
@@ -456,37 +454,46 @@ export default function PlaceOrderScreen() {
     const handleEnviarFactura = () => {
         setIsSubmitting(true);
 
+
         setSuccessMessage('');
 
-        const details = cartItems.map((item) => ({
-            actividadEconomica: "862010",
-            codigoProductoSin: 99100,
-            codigoProducto: item.id,
-            descripcion: item.description,
-            cantidad: item.qty,
-            unidadMedida: 58,
-            precioUnitario: item.price,
-            montoDescuento: (item.qty * item.price * ((discounts[item.id] || 0) / 100)).toFixed(2),
-            subTotal: (item.qty * item.price - (item.qty * item.price * ((discounts[item.id] || 0) / 100))).toFixed(2),
-            especialidad: item.especialidad,
-            especialidadDetalle: item.especialidadDetalle,
-            nroQuirofanoSalaOperaciones: item.nroQuirofanoSalaOperaciones,
-            especialidadMedico: item.especialidadMedico,
-            nombreApellidoMedico: item.nombreApellidoMedico,
-            nitDocumentoMedico: item.nitDocumentoMedico,
-            nroMatriculaMedico: item.nroMatriculaMedico,
-            nroFacturaMedico: item.nroFacturaMedico,
-        }));
+        const details = cartItems.map((item) => {
+            let discount;
+            if (isAmount) {
+                discount = discounts[item.id] || 0;
+            } else {
+                discount = item.qty * item.price * ((discounts[item.id] || 0) / 100);
+            }
+            return {
+                actividadEconomica: "862010",
+                codigoProductoSin: 99100,
+                codigoProducto: item.id,
+                descripcion: item.description,
+                cantidad: item.qty,
+                unidadMedida: 58,
+                precioUnitario: item.price,
+                montoDescuento: discount.toFixed(2),
+                subTotal: calculateDiscountedPrice(item.qty, item.price, discounts[item.id] || 0, isAmount).toFixed(2),
+                especialidad: item.especialidad,
+                especialidadDetalle: item.especialidadDetalle,
+                nroQuirofanoSalaOperaciones: item.nroQuirofanoSalaOperaciones,
+                especialidadMedico: item.especialidadMedico,
+                nombreApellidoMedico: item.nombreApellidoMedico,
+                nitDocumentoMedico: item.nitDocumentoMedico,
+                nroMatriculaMedico: item.nroMatriculaMedico,
+                nroFacturaMedico: item.nroFacturaMedico,
+            };
+        });
 
         const params = {
             codigo_metodo_pago: paymentMethod,
-            monto_total: (calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100))).toFixed(2),
-            monto_total_sujeto_iva: (calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100))).toFixed(2),
+            monto_total: calculateDiscountedSubtotal(isAmountTotal, additionalDiscount).toFixed(2),
+            monto_total_sujeto_iva: calculateDiscountedSubtotal(isAmountTotal, additionalDiscount).toFixed(2),
             codigo_moneda: 1,
             tipo_cambio: 1,
-            monto_total_moneda: (calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100))).toFixed(2),
+            monto_total_moneda: calculateDiscountedSubtotal(isAmountTotal, additionalDiscount).toFixed(2),
             monto_gift_card: null,
-            descuento_adicional: (calculateUpdatedSubtotal()*(additionalDiscount/100)).toFixed(2),
+            descuento_adicional: (calculateDiscountedSubtotal(isAmountTotal, additionalDiscount) - calculateUpdatedSubtotal()).toFixed(2),
             usuario: "string",
             numero_tarjeta: creditCardNumber,
         };
