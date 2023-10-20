@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import { useDispatch } from 'react-redux';
-import {addToCart, removeFromCart, savePaymentMethod, clearCart} from '../../redux/slices/cartSlice.js';
+import {addToCartOp, removeFromCartOp, savePaymentMethodOp, clearCartOp} from '../../redux/slices/cartSliceOp.js';
 
 import React, { useState } from 'react';
 import axios from 'axios';
@@ -60,22 +60,22 @@ export default function PlaceOrderScreen() {
 
 
     const handleClearCart = () => {
-        dispatch(clearCart());
+        dispatch(clearCartOp());
     };
 
     const handleLogout = () => {
-        dispatch(clearCart());
+        dispatch(clearCartOp());
         router.push('/');
 
     };
 
     const removeFromCartHandler = (id) => {
-        dispatch(removeFromCart(id))
+        dispatch(removeFromCartOp(id))
     }
 
 
     const addToCartHandler = async (product, qty) => {
-        dispatch(addToCart({ ...product, qty }))
+        dispatch(addToCartOp({ ...product, qty }))
     }
     // State for the search query
     const [searchQuery, setSearchQuery] = useState('');
@@ -147,7 +147,7 @@ export default function PlaceOrderScreen() {
 
     const submitHandler = () => {
         // Store the selected payment method in Redux
-        dispatch(savePaymentMethod(selectedPaymentMethod));
+        dispatch(savePaymentMethodOp(selectedPaymentMethod));
         router.push('/placeorder');
     };
 
