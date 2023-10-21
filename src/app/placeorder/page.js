@@ -466,7 +466,7 @@ export default function PlaceOrderScreen() {
             )
             .then((response) => {
                 if (response.status === 200) {
-                    alert(`CUFD actualizado con éxito! El número de CUFD es: ${response.data.codigo}`);
+                    alert(`CUFD actualizado con éxito! El código CUFD es: ${response.data.codigo}`);
                 } else {
                     // Handle the error
                     alert('Fallo al actualizar el CUFD. Por favor intente de nuevo.');
