@@ -450,6 +450,34 @@ export default function PlaceOrderScreen() {
 
     const [searchField, setSearchField] = useState('');
 
+    const handleActualizarCufd = () => {
+        const cufdUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/codes/cufd?customer_id=1&branch_id=1&pos_id=1`;
+        const dataCufd = '';
+
+        axios
+            .post(
+                cufdUrl,
+                dataCufd,
+                {
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                }
+            )
+            .then((response) => {
+                if (response.status === 200) {
+                    alert(`CUFD actualizado con éxito! El número de CUFD es: ${response.data.codigo}`);
+                } else {
+                    // Handle the error
+                    alert('Fallo al actualizar el CUFD. Por favor intente de nuevo.');
+                }
+            })
+            .catch((error) => {
+                console.error('Error sending invoice:', error);
+                alert('Un error ocurrió mientras se actualizaba el CUFD. Por favor intente de nuevo.');
+            })
+    };
+
 
     const handleEnviarFactura = () => {
         setIsSubmitting(true);
@@ -585,7 +613,7 @@ export default function PlaceOrderScreen() {
                                         value={selectedPaymentMethod}
                                         onChange={handlePaymentMethodChange}
                                     >
-                                        <option value="1" selected>Efectivo</option>
+                                        <option value="1">Efectivo</option>
                                         <option value="2">Tarjeta</option>
                                         <option value="7">Transferencia bancaria</option>
                                         <option value="10">Tarjeta y Efectivo</option>
@@ -958,6 +986,18 @@ export default function PlaceOrderScreen() {
                                     <div className="mb-2 flex justify-between">
                                         <button onClick={handleImprimirFactura} className="primary-button w-full">
                                             Imprimir Factura
+                                        </button>
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="card  p-5">
+                            <div className="mb-3">
+                                <h2 className="mb-2 text-lg"><b>Actualizar CUFD</b></h2>
+                                <ul>
+                                    <div className="mb-2 flex justify-between">
+                                        <button onClick={handleActualizarCufd} className="primary-button w-full">
+                                            Actualizar CUFD
                                         </button>
                                     </div>
                                 </ul>

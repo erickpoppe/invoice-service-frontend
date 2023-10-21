@@ -21,7 +21,7 @@ export const data = {
       nroFacturaMedico: 1,
     },
     {
-      id: 'RX-009',
+      id: 'RX-006',
       name: 'RX. Antebrazo AP-L',
       image: '',
       price: 250,
