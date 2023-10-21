@@ -56,7 +56,7 @@ export default function ShippingAddressPage() {
       dispatch(saveClientId(ide));
       window.close();
     } catch (error) {
-      alert(`EL NIT ES INVÁLIDO!`);
+      alert(`Error registrando al nuevo cliente.`);
       console.error('Error creating client:', error);
     }
   };
