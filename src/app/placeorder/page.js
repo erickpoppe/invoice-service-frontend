@@ -557,7 +557,7 @@ export default function PlaceOrderScreen() {
                     alert(response.data.status);
                     alert(`El número de factura es: ${response.data.invoice_number}`);
                     alert(response.data.id);
-                    setNombre_paciente('');
+
                 } else {
                     // Handle the error
                     alert('Failed to send invoice. Please try again.');
