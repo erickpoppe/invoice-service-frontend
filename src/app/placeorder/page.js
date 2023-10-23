@@ -146,10 +146,11 @@ export default function PlaceOrderScreen() {
 
 
     const receiveMessage = (event) => {
-        const { payload } = event.data; // Extract the data from the event
+        const { payload } = event.data;
         if (payload) {
             console.log(payload);
-            setFoundClient(payload); // Store the received data in the local state
+            setFoundClient(payload);
+            client_id = foundClient.id;
             console.log(payload.nombre_razon_social);
         }
         // Update the data in your Redux store or perform any other necessary actions
@@ -436,7 +437,7 @@ export default function PlaceOrderScreen() {
                     }
 
                 } else {
-                    console.error('Failed to fetch client data');
+                    console.error('Failreed to fetch client data');
                 }
             } catch (error) {
                 console.error('Error fetching client data:', error);
