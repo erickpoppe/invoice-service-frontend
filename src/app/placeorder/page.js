@@ -135,6 +135,28 @@ export default function PlaceOrderScreen() {
 
     const [codigoRecepcion, setCodigoRecepcion] = useState(null);
 
+    useEffect(() => {
+        window.addEventListener('message', receiveMessage, false);
+        return () => {
+            window.removeEventListener('message', receiveMessage, false);
+        };
+    }, []);
+
+    const [receivedData, setReceivedData] = useState('');
+
+
+    const receiveMessage = (event) => {
+        const { payload } = event.data; // Extract the data from the event
+        if (payload) {
+            console.log(payload);
+            setFoundClient(payload); // Store the received data in the local state
+            console.log(payload.nombre_razon_social);
+        }
+        // Update the data in your Redux store or perform any other necessary actions
+    };
+
+
+
     const handlePaymentMethodChange = (event) => {
         const newValue = event.target.value;
         setSelectedPaymentMethod(newValue);
@@ -678,10 +700,23 @@ export default function PlaceOrderScreen() {
                                     />
                                     <button onClick={handleBuscarCliente} className="primary-button">Buscar cliente venta</button>
                                 </div>
+                                <div>
+                                    {/* Your original window content */}
+                                    {receivedData && (
+                                        <div>
+                                            <p>{receivedData.nombre_razon_social}</p>
+                                            <p>{receivedData.correo_electronico}</p>
+                                            <p>{receivedData.complemento}</p>
+                                            <p>{receivedData.numero_documento}</p>
+                                            <p>{receivedData.codigo_tipo_documento_identidad}</p>
+                                        </div>
+                                    )}
+                                </div>
                                 {foundClient !== null ? (
                                     <div className="found-client">
-                                        <h3>Cliente encontrado: </h3>
-                                        <p><b>Nombre: {foundClient.nombre_razon_social}</b></p>
+                                        <p><b>{foundClient.nombre_razon_social}</b></p>
+                                        <p><b>{foundClient.numero_documento}</b></p>
+                                        <p><b>{foundClient.correo_electronico}</b></p>
                                     </div>
                                 ) : (
                                     <div className="no-client-found">

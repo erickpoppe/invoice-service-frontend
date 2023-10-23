@@ -54,6 +54,7 @@ export default function ShippingAddressPage() {
       const ide = response.data.id;
       dispatch(saveShippingAddress(payload));
       dispatch(saveClientId(ide));
+      window.opener.postMessage({ payload }, '*');
       window.close();
     } catch (error) {
       alert(`Error registrando al nuevo cliente.`);
