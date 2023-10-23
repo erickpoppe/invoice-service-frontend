@@ -151,6 +151,7 @@ export default function PlaceOrderScreen() {
             console.log(payload);
             setFoundClient(payload);
             client_id = foundClient.id;
+            console.log(client_id);
             console.log(payload.nombre_razon_social);
         }
         // Update the data in your Redux store or perform any other necessary actions
