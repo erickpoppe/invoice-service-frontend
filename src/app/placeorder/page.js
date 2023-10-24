@@ -16,6 +16,7 @@ import {data} from "@/utils/data";
 import { saveAs } from 'file-saver';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DataClient from "@/components/DataClient";
 
 
 
@@ -700,11 +701,10 @@ export default function PlaceOrderScreen() {
                                     />
                                     <button onClick={handleBuscarCliente} className="primary-button">Buscar cliente venta</button>
                                 </div>
-                                    <div className="found-client">
-                                        <p><b>{foundClient.nombre_razon_social}</b></p>
-                                        <p><b>{foundClient.numero_documento}</b></p>
-                                        <p><b>{foundClient.correo_electronico}</b></p>
-                                    </div>
+                                <div>
+                                    <DataClient foundClient={foundClient} setFoundClient={setFoundClient} />
+                                </div>
+
 
 
 
