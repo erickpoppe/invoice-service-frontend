@@ -25,6 +25,8 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function PlaceOrderScreen() {
     const [foundClient, setFoundClient] = useState('');
 
+    const [client_id, setClientId] = useState('');
+
     function calculateDiscountedPrice(quantity, price, discount, isAmount) {
         if (isAmount) {
             return (quantity * price - discount).toFixed(2);
@@ -146,15 +148,18 @@ export default function PlaceOrderScreen() {
 
 
     const receiveMessage = (event) => {
-        const { payload } = event.data;
+        const { payload, ide } = event.data;
         if (payload) {
             console.log(payload);
             setFoundClient(payload);
-            client_id = foundClient.id;
-            console.log(client_id);
+            setClientId(ide);
             console.log(payload.nombre_razon_social);
         }
-        // Update the data in your Redux store or perform any other necessary actions
+        if (ide) {
+            setClientId(ide);
+
+        }
+        console.log(client_id);
     };
 
 
@@ -284,26 +289,14 @@ export default function PlaceOrderScreen() {
 
 
     const user_id= useSelector((state) => state.cart.userId);
-    let client_id = foundClient.id;
+
 
     useEffect(() => {
         const newApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=1&client_id=${client_id}&is_offline=${isOffline ? 1 : 0}`;
         setApiUrl(newApiUrl);
         }, [client_id]);
 
-    useEffect(() => {
-        const nuevoApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=1&client_id=${client_id}&is_offline=${isOffline ? 1 : 0}`;
-        setApixUrl(nuevoApiUrl);
-    }, [client_id, isOffline]);
 
-    const handleEstablecerCliente = () => {
-        if (foundClient) {
-            client_id = foundClient.id;
-            console.log(client_id);
-        } else {
-            console.log("No hay ese cliente!")
-        };
-    };
 
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
@@ -430,7 +423,7 @@ export default function PlaceOrderScreen() {
                     if (foundClient) {
                         console.log('Found Client:', foundClient);
                         setFoundClient(foundClient);
-                        client_id = foundClient.id;
+                        setClientId(foundClient.id);
                         console.log(client_id);
                     } else {
                         console.log('Client not found');
@@ -506,6 +499,8 @@ export default function PlaceOrderScreen() {
 
 
     const handleEnviarFactura = () => {
+
+        console.log(client_id);
         setIsSubmitting(true);
 
 
