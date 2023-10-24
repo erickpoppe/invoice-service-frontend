@@ -427,7 +427,7 @@ export default function PlaceOrderScreen() {
                         console.log(client_id);
                     } else {
                         console.log('Client not found');
-                        setFoundClient(null);
+
                     }
 
                 } else {
@@ -700,17 +700,12 @@ export default function PlaceOrderScreen() {
                                     />
                                     <button onClick={handleBuscarCliente} className="primary-button">Buscar cliente venta</button>
                                 </div>
-                                {foundClient !== null ? (
                                     <div className="found-client">
                                         <p><b>{foundClient.nombre_razon_social}</b></p>
                                         <p><b>{foundClient.numero_documento}</b></p>
                                         <p><b>{foundClient.correo_electronico}</b></p>
                                     </div>
-                                ) : (
-                                    <div className="no-client-found">
-                                    <p>No se encontró ningún cliente.</p>
-                                    </div>
-                                )}
+
 
 
                             </div>
