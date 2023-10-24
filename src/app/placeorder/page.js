@@ -417,7 +417,7 @@ export default function PlaceOrderScreen() {
                 if (response.status === 200) {
                     const clients = response.data;
 
-                    // Use the value from the input field as the search field
+
                     const foundClient = clients.find((client) => client.numero_documento === searchField);
 
                     if (foundClient) {
@@ -501,6 +501,7 @@ export default function PlaceOrderScreen() {
     const handleEnviarFactura = () => {
 
         console.log(client_id);
+        console.log(client_id);
         setIsSubmitting(true);
 
 
@@ -554,6 +555,8 @@ export default function PlaceOrderScreen() {
             nombre_paciente: nombre_paciente,
             params,
         };
+
+        console.log(client_id);
 
         const mapiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=1&client_id=${client_id}&is_offline=${isOffline ? 1 : 0}`;
 
