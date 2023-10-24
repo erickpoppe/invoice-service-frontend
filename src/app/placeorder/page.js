@@ -700,18 +700,6 @@ export default function PlaceOrderScreen() {
                                     />
                                     <button onClick={handleBuscarCliente} className="primary-button">Buscar cliente venta</button>
                                 </div>
-                                <div>
-                                    {/* Your original window content */}
-                                    {receivedData && (
-                                        <div>
-                                            <p>{receivedData.nombre_razon_social}</p>
-                                            <p>{receivedData.correo_electronico}</p>
-                                            <p>{receivedData.complemento}</p>
-                                            <p>{receivedData.numero_documento}</p>
-                                            <p>{receivedData.codigo_tipo_documento_identidad}</p>
-                                        </div>
-                                    )}
-                                </div>
                                 {foundClient !== null ? (
                                     <div className="found-client">
                                         <p><b>{foundClient.nombre_razon_social}</b></p>
