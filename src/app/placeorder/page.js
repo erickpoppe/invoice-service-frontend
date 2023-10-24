@@ -789,6 +789,7 @@ export default function PlaceOrderScreen() {
                                                                     const newValue = Math.max(1, Number(e.target.value));
                                                                     addToCartHandler(item, newValue);
                                                                 }}
+                                                                className="w-16"
                                                             />
                                                         </td>
                                                         <td className="p-5 text-right">Bs. {item.price}</td>
