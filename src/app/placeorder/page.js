@@ -74,6 +74,18 @@ export default function PlaceOrderScreen() {
         dispatch(clearCart());
     };
 
+    const handleCaso99001 = () => {
+
+    };
+
+    const handleCaso99002 = () => {
+
+    };
+
+    const handleCaso99003 = () => {
+
+    };
+
     const handleLogout = () => {
         dispatch(clearCart());
         router.push('/');
