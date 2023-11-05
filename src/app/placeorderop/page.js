@@ -93,6 +93,13 @@ export default function PlaceOrderScreen() {
 
     const [setEditModalOpen] = useState(false);
 
+    const [Case99001, setCase99001] = useState(false);
+
+    const [Case99002, setCase99002] = useState(false);
+
+    const [Case99003, setCase99003] = useState(false);
+
+
     const handleEditarClick = () => {
 
 

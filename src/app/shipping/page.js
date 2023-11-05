@@ -131,7 +131,7 @@ export default function ShippingAddressPage() {
               <option value="2">Cédula de identidad de extranjero</option>
               <option value="3">Pasaporte</option>
               <option value="4">Otro documento de identidad</option>
-              <option value="7">Número de identificación tributaria</option>
+              <option value="5">Número de identificación tributaria</option>
             </select>
           </div>
           <div className="mb-4 flex justify-between">
