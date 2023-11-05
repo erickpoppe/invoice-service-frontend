@@ -120,6 +120,18 @@ export default function PlaceOrderScreen() {
         }
     };
 
+    const handleCaso99001 = () => {
+
+    };
+
+    const handleCaso99002 = () => {
+
+    };
+
+    const handleCaso99003 = () => {
+
+    };
+
     const handleCloseModal = () => {
         // Close the modal when the close button is clicked
         setEditModalOpen(false);
