@@ -280,7 +280,7 @@ export default function PlaceOrderScreen() {
     };
 
     const toggleIsAmountTotal = () => {
-        setIsAmountTotal((prevIsAmountTotal) => !prevIsAmountTotal);
+        setIsAmountTotal((prevIsAmount  Total) => !prevIsAmountTotal);
     };
 
 
