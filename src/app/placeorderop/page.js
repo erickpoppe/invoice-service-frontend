@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import { useDispatch } from 'react-redux';
-import {addToCartOp, removeFromCartOp, savePaymentMethodOp, clearCartOp} from '../../redux/slices/cartSliceOp.js';
+import {addToCart, removeFromCart, savePaymentMethod, clearCart} from '../../redux/slices/cartSlice.js';
 
 import React, { useState } from 'react';
 import axios from 'axios';
@@ -16,6 +16,7 @@ import {data} from "@/utils/data";
 import { saveAs } from 'file-saver';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DataClient from "@/components/DataClient";
 
 
 
@@ -25,11 +26,21 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function PlaceOrderScreen() {
     const [foundClient, setFoundClient] = useState('');
 
+    const [client_id, setClientId] = useState('');
+
     function calculateDiscountedPrice(quantity, price, discount, isAmount) {
         if (isAmount) {
             return (quantity * price - discount).toFixed(2);
         } else {
             return (quantity * price * (1 - discount / 100)).toFixed(2);
+        }
+    };
+
+    function calculateDiscountedSubtotal(isAmountTotal, discount) {
+        if (isAmountTotal) {
+            return (calculateUpdatedSubtotal() - discount).toFixed(2);
+        } else {
+            return (calculateUpdatedSubtotal() * (1 - discount / 100)).toFixed(2);
         }
     };
 
@@ -60,22 +71,22 @@ export default function PlaceOrderScreen() {
 
 
     const handleClearCart = () => {
-        dispatch(clearCartOp());
+        dispatch(clearCart());
     };
 
     const handleLogout = () => {
-        dispatch(clearCartOp());
+        dispatch(clearCart());
         router.push('/');
 
     };
 
     const removeFromCartHandler = (id) => {
-        dispatch(removeFromCartOp(id))
+        dispatch(removeFromCart(id))
     }
 
 
     const addToCartHandler = async (product, qty) => {
-        dispatch(addToCartOp({ ...product, qty }))
+        dispatch(addToCart({ ...product, qty }))
     }
     // State for the search query
     const [searchQuery, setSearchQuery] = useState('');
@@ -127,6 +138,33 @@ export default function PlaceOrderScreen() {
 
     const [codigoRecepcion, setCodigoRecepcion] = useState(null);
 
+    useEffect(() => {
+        window.addEventListener('message', receiveMessage, false);
+        return () => {
+            window.removeEventListener('message', receiveMessage, false);
+        };
+    }, []);
+
+    const [receivedData, setReceivedData] = useState('');
+
+
+    const receiveMessage = (event) => {
+        const { payload, ide } = event.data;
+        if (payload) {
+            console.log(payload);
+            setFoundClient(payload);
+            setClientId(ide);
+            console.log(payload.nombre_razon_social);
+        }
+        if (ide) {
+            setClientId(ide);
+
+        }
+        console.log(client_id);
+    };
+
+
+
     const handlePaymentMethodChange = (event) => {
         const newValue = event.target.value;
         setSelectedPaymentMethod(newValue);
@@ -147,7 +185,7 @@ export default function PlaceOrderScreen() {
 
     const submitHandler = () => {
         // Store the selected payment method in Redux
-        dispatch(savePaymentMethodOp(selectedPaymentMethod));
+        dispatch(savePaymentMethod(selectedPaymentMethod));
         router.push('/placeorder');
     };
 
@@ -196,13 +234,11 @@ export default function PlaceOrderScreen() {
             });
     };
 
-
-
     const calculateUpdatedSubtotal = () => {
         let updatedSubtotal = 0;
         cartItems.forEach((item) => {
-            const discountPercentage = discounts[item.id] || 0;
-            const discountedAmount = (item.qty * item.price * (1 - discountPercentage / 100));
+            const discount = isAmount ? (discounts[item.id] || 0) : (item.qty * item.price * (discounts[item.id] || 0) / 100);
+            const discountedAmount = item.qty * item.price - discount;
             updatedSubtotal += discountedAmount;
         });
         return updatedSubtotal.toFixed(2);
@@ -236,7 +272,6 @@ export default function PlaceOrderScreen() {
     };
 
 
-
     const handleAdditionalDiscountChange = (value) => {
         setAdditionalDiscount(parseFloat(value));
     };
@@ -255,26 +290,14 @@ export default function PlaceOrderScreen() {
 
 
     const user_id= useSelector((state) => state.cart.userId);
-    let client_id = foundClient.id;
+
 
     useEffect(() => {
         const newApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=1&client_id=${client_id}&is_offline=${isOffline ? 1 : 0}`;
         setApiUrl(newApiUrl);
     }, [client_id]);
 
-    useEffect(() => {
-        const nuevoApiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=1&client_id=${client_id}&is_offline=${isOffline ? 1 : 0}`;
-        setApixUrl(nuevoApiUrl);
-    }, [client_id, isOffline]);
 
-    const handleEstablecerCliente = () => {
-        if (foundClient) {
-            client_id = foundClient.id;
-            console.log(client_id);
-        } else {
-            console.log("No hay ese cliente!")
-        };
-    };
 
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
@@ -395,19 +418,21 @@ export default function PlaceOrderScreen() {
             if (response.status === 200) {
                 const clients = response.data;
 
-                // Use the value from the input field as the search field
+
                 const foundClient = clients.find((client) => client.numero_documento === searchField);
 
                 if (foundClient) {
                     console.log('Found Client:', foundClient);
                     setFoundClient(foundClient);
+                    setClientId(foundClient.id);
+                    console.log(client_id);
                 } else {
                     console.log('Client not found');
-                    setFoundClient(null);
+
                 }
 
             } else {
-                console.error('Failed to fetch client data');
+                console.error('Failreed to fetch client data');
             }
         } catch (error) {
             console.error('Error fetching client data:', error);
@@ -445,41 +470,81 @@ export default function PlaceOrderScreen() {
 
     const [searchField, setSearchField] = useState('');
 
+    const handleActualizarCufd = () => {
+        const cufdUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/codes/cufd?customer_id=1&branch_id=1&pos_id=1`;
+        const dataCufd = '';
+
+        axios
+            .post(
+                cufdUrl,
+                dataCufd,
+                {
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                }
+            )
+            .then((response) => {
+                if (response.status === 200) {
+                    alert(`CUFD actualizado con éxito! El código C  UFD es: ${response.data.codigo}`);
+                } else {
+                    // Handle the error
+                    alert('Fallo al actualizar el CUFD. Por favor intente de nuevo.');
+                }
+            })
+            .catch((error) => {
+                console.error('Error sending invoice:', error);
+                alert('Un error ocurrió mientras se actualizaba el CUFD. Por favor intente de nuevo.');
+            })
+    };
+
 
     const handleEnviarFactura = () => {
+
+        console.log(client_id);
+        console.log(client_id);
         setIsSubmitting(true);
+
 
         setSuccessMessage('');
 
-        const details = cartItems.map((item) => ({
-            actividadEconomica: "862010",
-            codigoProductoSin: 99100,
-            codigoProducto: item.id,
-            descripcion: item.description,
-            cantidad: item.qty,
-            unidadMedida: 58,
-            precioUnitario: item.price,
-            montoDescuento: (item.qty * item.price * ((discounts[item.id] || 0) / 100)).toFixed(2),
-            subTotal: (item.qty * item.price - (item.qty * item.price * ((discounts[item.id] || 0) / 100))).toFixed(2),
-            especialidad: item.especialidad,
-            especialidadDetalle: item.especialidadDetalle,
-            nroQuirofanoSalaOperaciones: item.nroQuirofanoSalaOperaciones,
-            especialidadMedico: item.especialidadMedico,
-            nombreApellidoMedico: item.nombreApellidoMedico,
-            nitDocumentoMedico: item.nitDocumentoMedico,
-            nroMatriculaMedico: item.nroMatriculaMedico,
-            nroFacturaMedico: item.nroFacturaMedico,
-        }));
+        const details = cartItems.map((item) => {
+            let discount;
+            if (isAmount) {
+                discount = discounts[item.id] || 0;
+            } else {
+                discount = item.qty * item.price * ((discounts[item.id] || 0) / 100);
+            }
+            return {
+                actividadEconomica: "862010",
+                codigoProductoSin: 99100,
+                codigoProducto: item.id,
+                descripcion: item.description,
+                cantidad: item.qty,
+                unidadMedida: 58,
+                precioUnitario: item.price,
+                montoDescuento: discount.toFixed(2),
+                subTotal: calculateDiscountedPrice(item.qty, item.price, discounts[item.id] || 0, isAmount),
+                especialidad: item.especialidad,
+                especialidadDetalle: item.especialidadDetalle,
+                nroQuirofanoSalaOperaciones: item.nroQuirofanoSalaOperaciones,
+                especialidadMedico: item.especialidadMedico,
+                nombreApellidoMedico: item.nombreApellidoMedico,
+                nitDocumentoMedico: item.nitDocumentoMedico,
+                nroMatriculaMedico: item.nroMatriculaMedico,
+                nroFacturaMedico: item.nroFacturaMedico,
+            };
+        });
 
         const params = {
             codigo_metodo_pago: paymentMethod,
-            monto_total: (calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100))).toFixed(2),
-            monto_total_sujeto_iva: (calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100))).toFixed(2),
+            monto_total: calculateDiscountedSubtotal(isAmountTotal, additionalDiscount),
+            monto_total_sujeto_iva: calculateDiscountedSubtotal(isAmountTotal, additionalDiscount),
             codigo_moneda: 1,
             tipo_cambio: 1,
-            monto_total_moneda: (calculateUpdatedSubtotal()-(calculateUpdatedSubtotal()*(additionalDiscount/100))).toFixed(2),
+            monto_total_moneda: calculateDiscountedSubtotal(isAmountTotal, additionalDiscount),
             monto_gift_card: null,
-            descuento_adicional: (calculateUpdatedSubtotal()*(additionalDiscount/100)).toFixed(2),
+            descuento_adicional: (calculateUpdatedSubtotal() -calculateDiscountedSubtotal(isAmountTotal, additionalDiscount)).toFixed(2),
             usuario: "string",
             numero_tarjeta: creditCardNumber,
         };
@@ -491,6 +556,8 @@ export default function PlaceOrderScreen() {
             nombre_paciente: nombre_paciente,
             params,
         };
+
+        console.log(client_id);
 
         const mapiUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/emit/hospital_clinic?&branch_id=1&pos_id=1&user_id=1&customer_id=1&client_id=${client_id}&is_offline=${isOffline ? 1 : 0}`;
 
@@ -513,7 +580,7 @@ export default function PlaceOrderScreen() {
                     alert(response.data.status);
                     alert(`El número de factura es: ${response.data.invoice_number}`);
                     alert(response.data.id);
-                    setNombre_paciente('');
+
                 } else {
                     // Handle the error
                     alert('Failed to send invoice. Please try again.');
@@ -634,27 +701,19 @@ export default function PlaceOrderScreen() {
                                 />
                                 <button onClick={handleBuscarCliente} className="primary-button">Buscar cliente venta</button>
                             </div>
-                            {foundClient !== null ? (
-                                <div className="found-client">
-                                    <h3>Cliente encontrado: </h3>
-                                    <p>ID: {foundClient.id}</p>
-                                    <p>Nombre: {foundClient.nombre_razon_social}</p>
-                                </div>
-                            ) : (
-                                <div className="no-client-found">
-                                    <p>No se encontró ningún cliente.</p>
-                                </div>
-                            )}
                             <div>
-                                <button onClick={handleEstablecerCliente} className="primary-button">Establecer cliente</button>
+                                <DataClient foundClient={foundClient} setFoundClient={setFoundClient} />
                             </div>
+
+
+
 
                         </div>
                         <div className="bg-white p-4 rounded shadow">
                             <h2 className="text-xl font-semibold">Resumen de Venta de Artículos</h2>
                             <div className="mb-2 flex justify-end">
                                 <label className="inline-flex items-center">
-                                    <span className="mr-2">Por monto</span>
+                                    <span className="mr-2">Descuento por monto</span>
                                     <input
                                         type="checkbox"
                                         checked={isAmount}
@@ -713,6 +772,7 @@ export default function PlaceOrderScreen() {
                                                                     const newValue = Math.max(1, Number(e.target.value));
                                                                     addToCartHandler(item, newValue);
                                                                 }}
+                                                                className="w-16"
                                                             />
                                                         </td>
                                                         <td className="p-5 text-right">Bs. {item.price}</td>
@@ -756,7 +816,7 @@ export default function PlaceOrderScreen() {
                             <h2 className="mb-2 text-lg"><b>Resumen de Facturación</b></h2>
                             <div className="mb-2 flex justify-end">
                                 <label className="inline-flex items-center">
-                                    <span className="mr-2">Por monto</span>
+                                    <span className="mr-2">Descuento por el monto</span>
                                     <input
                                         type="checkbox"
                                         checked={isAmountTotal}
@@ -764,7 +824,6 @@ export default function PlaceOrderScreen() {
                                         className="form-checkbox h-5 w-5 text-indigo-600"
                                     />
                                 </label>
-
                             </div>
                             <ul>
                                 <li>
@@ -796,15 +855,14 @@ export default function PlaceOrderScreen() {
                                 <li>
                                     <div className="mb-2 flex justify-between">
                                         <div>SubTotal con Descuento</div>
-                                        <div>Bs. {((calculateUpdatedSubtotal() * (1 - additionalDiscount / 100)).toFixed(2))}</div>
+                                        <div>Bs. {calculateDiscountedSubtotal(isAmountTotal, additionalDiscount)}</div>
 
                                     </div>
                                 </li>
                                 <li>
                                     <div className="mb-2 flex justify-between">
                                         <div>Monto Total</div>
-                                        <div>Bs. {((calculateUpdatedSubtotal() * (1 - additionalDiscount / 100)).toFixed(2))}</div>
-
+                                        <div>Bs. {calculateDiscountedSubtotal(isAmountTotal, additionalDiscount)}</div>
                                     </div>
                                 </li>
                                 <li>
@@ -856,6 +914,75 @@ export default function PlaceOrderScreen() {
                                 </li>
 
                             </ul>
+                            <ul>
+                                <div className="card p-5">
+                                    <div>
+                                        <h2 className="mb-2 text-lg"><b>Anular factura</b></h2>
+                                        <ul>
+                                            <li className="mb-4"> {/* Add margin to create separation */}
+                                                <div className="flex justify-between items-center">
+                                                    <div className="flex items-center"> {/* Add flex and items-center to center elements vertically */}
+                                                        <input
+                                                            type="text"
+                                                            value={invoiceNumber}
+                                                            onChange={(e) => setInvoiceNumber(e.target.value)}
+                                                            className="border rounded p-1 ml-2 w-full"
+                                                            placeholder="Número de la factura..."
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div className="mb-4 flex justify-between items-center"> {/* Add margin and center elements vertically */}
+                                                    <select
+                                                        value={codigoMotivo}
+                                                        onChange={(e) => setCodigoMotivo(e.target.value)}
+                                                        className="border rounded p-1 w-full"
+                                                    >
+                                                        <option value="1">FACTURA MAL EMITIDA</option>
+                                                        <option value="2">NOTA DE CREDITO-DEBITO MAL EMITIDA</option>
+                                                        <option value="3">DATOS DE EMISION INCORRECTOS</option>
+                                                        <option value="4">FACTURA O NOTA DE CREDITO-DEBITO DEVUELTA</option>
+                                                    </select>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <div className="flex justify-center"> {/* Center the button */}
+                                            <button onClick={handleAnularFactura} className="primary-button w-full">
+                                                Anular Factura
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <ol>
+                                            <h2 className="mb-2 text-lg"><b>Emitir reportes</b></h2>
+                                            <li className="mb-4"> {/* Add margin to create separation */}
+                                                <div className="flex justify-between items-center">
+                                                    <div className="mb-2">
+                                                        <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
+                                                            Fecha de inicio
+                                                        </label>
+                                                        <input
+                                                            type="datetime-local" // Use datetime-local type
+                                                            id="startDate"
+                                                            name="startDate"
+                                                            className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                                                            value={startDate}
+                                                            onChange={(e) => setStartDate(e.target.value)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ol>
+                                        <div className="flex justify-center"> {/* Center the button */}
+                                            <button onClick={handleRetrieveData} className="primary-button w-full">
+                                                Emitir reporte
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </ul>
                         </div>
                         <div className="card  p-5">
                             <div className="mb-3">
@@ -877,6 +1004,40 @@ export default function PlaceOrderScreen() {
                                     <div className="mb-2 flex justify-between">
                                         <button onClick={handleImprimirFactura} className="primary-button w-full">
                                             Imprimir Factura
+                                        </button>
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="card  p-5">
+                            <div className="mb-3">
+                                <h2 className="mb-2 text-lg"><b>Actualizar CUFD</b></h2>
+                                <ul>
+                                    <div className="mb-2 flex justify-between">
+                                        <button onClick={handleActualizarCufd} className="primary-button w-full">
+                                            Actualizar CUFD
+                                        </button>
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="card  p-5">
+                            <div className="mb-3">
+                                <h2 className="mb-2 text-lg"><b>Casos Especiales</b></h2>
+                                <ul>
+                                    <div className="mb-2 flex justify-between">
+                                        <button onClick={handleCaso99001} className="primary-button w-full">
+                                            Caso especial 99001
+                                        </button>
+                                    </div>
+                                    <div className="mb-2 flex justify-between">
+                                        <button onClick={handleCaso99002} className="primary-button w-full">
+                                            Caso especial 99002
+                                        </button>
+                                    </div>
+                                    <div className="mb-2 flex justify-between">
+                                        <button onClick={handleCaso99003} className="primary-button w-full">
+                                            Caso especial 99003
                                         </button>
                                     </div>
                                 </ul>

@@ -1021,6 +1021,28 @@ export default function PlaceOrderScreen() {
                                 </ul>
                             </div>
                         </div>
+                        <div className="card  p-5">
+                            <div className="mb-3">
+                                <h2 className="mb-2 text-lg"><b>Casos Especiales</b></h2>
+                                <ul>
+                                    <div className="mb-2 flex justify-between">
+                                        <button onClick={handleCaso99001} className="primary-button w-full">
+                                            Caso especial 99001
+                                        </button>
+                                    </div>
+                                    <div className="mb-2 flex justify-between">
+                                        <button onClick={handleCaso99002} className="primary-button w-full">
+                                            Caso especial 99002
+                                        </button>
+                                    </div>
+                                    <div className="mb-2 flex justify-between">
+                                        <button onClick={handleCaso99003} className="primary-button w-full">
+                                            Caso especial 99003
+                                        </button>
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
 
 
                     </div>
