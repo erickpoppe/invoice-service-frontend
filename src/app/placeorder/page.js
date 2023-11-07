@@ -17,7 +17,7 @@ import { saveAs } from 'file-saver';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DataClient from "@/components/DataClient";
-
+import toasty, { Toaster } from 'react-hot-toast';
 
 
 
@@ -445,9 +445,10 @@ export default function PlaceOrderScreen() {
                     }
 
                 } else {
-                    console.error('Failed to fetch client data');
+
                 }
             } catch (error) {
+                toast.error("Este cliente no está registrado.")
                 console.error('Error fetching client data:', error);
             }
         };
