@@ -280,7 +280,7 @@ export default function PlaceOrderScreen() {
     };
 
     const toggleIsAmountTotal = () => {
-        setIsAmountTotal((prevIsAmount  Total) => !prevIsAmountTotal);
+        setIsAmountTotal((prevIsAmountTotal) => !prevIsAmountTotal);
     };
 
 
@@ -421,7 +421,7 @@ export default function PlaceOrderScreen() {
 
         const handleBuscarCliente = async () => {
             try {
-                const response = await axios.get('https://dev-core-invoice-service-q642kqwota-uc.a.run.app/clients/', {
+                const response = await axios.get(`https://dev-core-invoice-service-q642kqwota-uc.a.run.app/clients/document/?document_number=${searchField}`, {
                     headers: {
                         Accept: 'application/json',
                     },
@@ -429,22 +429,23 @@ export default function PlaceOrderScreen() {
 
                 if (response.status === 200) {
                     const clients = response.data;
+                    console.log(clients);
 
 
-                    const foundClient = clients.find((client) => client.numero_documento === searchField);
+                     const foundClient = clients;
 
-                    if (foundClient) {
+                     if (foundClient) {
                         console.log('Found Client:', foundClient);
                         setFoundClient(foundClient);
                         setClientId(foundClient.id);
                         console.log(client_id);
-                    } else {
+                     } else {
                         console.log('Client not found');
 
                     }
 
                 } else {
-                    console.error('Failreed to fetch client data');
+                    console.error('Failed to fetch client data');
                 }
             } catch (error) {
                 console.error('Error fetching client data:', error);

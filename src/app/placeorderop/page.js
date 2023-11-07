@@ -17,6 +17,7 @@ import { saveAs } from 'file-saver';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DataClient from "@/components/DataClient";
+import toast, { Toaster } from 'react-hot-toast';
 
 
 
