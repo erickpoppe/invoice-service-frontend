@@ -206,7 +206,6 @@ export default function PlaceOrderScreen() {
     const submitHandler = () => {
         // Store the selected payment method in Redux
         dispatch(savePaymentMethod(selectedPaymentMethod));
-        router.push('/placeorder');
     };
 
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('1');

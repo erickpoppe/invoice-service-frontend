@@ -17,6 +17,7 @@ import { saveAs } from 'file-saver';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DataClient from "@/components/DataClient";
+import DataPatient from "@/components/DataPatient";
 import toasty, { Toaster } from 'react-hot-toast';
 
 
@@ -198,7 +199,6 @@ export default function PlaceOrderScreen() {
     const submitHandler = () => {
         // Store the selected payment method in Redux
         dispatch(savePaymentMethod(selectedPaymentMethod));
-        router.push('/placeorder');
     };
 
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('1');
@@ -440,7 +440,7 @@ export default function PlaceOrderScreen() {
                         setClientId(foundClient.id);
                         console.log(client_id);
                      } else {
-                        console.log('Client not found');
+                        console.log('Cliente no encontrado.');
 
                     }
 
@@ -640,6 +640,10 @@ export default function PlaceOrderScreen() {
                             </div>
                             <button onClick={handleNombrePaciente} className="primary-button" >Registrar</button>
                         </div>
+                        <div>
+                            nombre_paciente
+                            <DataPatient nombre_paciente={nombre_paciente}></DataPatient>
+                        </div>
                         <div className="card  p-5">
                             <h2 className="mb-2 text-lg"><b>Método de Pago</b></h2>
                             <div>{paymentMethod}</div>
@@ -658,7 +662,7 @@ export default function PlaceOrderScreen() {
                                         <option value="10">Tarjeta y Efectivo</option>
                                     </select>
                                 </div>
-                                {selectedPaymentMethod === "2" && (
+                                {selectedPaymentMethod === "2" || "10" && (
                                     <div className="mb-3">
                                         <label htmlFor="creditCardNumber" className="form-label">Número de tarjeta de crédito </label>
                                         <input
