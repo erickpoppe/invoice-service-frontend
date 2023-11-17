@@ -187,7 +187,7 @@ export default function PlaceOrderScreen() {
 
     const handlePaymentMethodChange = (event) => {
         const newValue = event.target.value;
-        setSelectedPaymentMethod(newValue);
+         (newValue);
     };
 
     const handleImprimirFactura = (event) => {
