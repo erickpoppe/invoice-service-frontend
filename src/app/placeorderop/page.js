@@ -17,7 +17,7 @@ import { saveAs } from 'file-saver';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DataClient from "@/components/DataClient";
-import toast, { Toaster } from 'react-hot-toast';
+
 
 
 
@@ -429,7 +429,7 @@ export default function PlaceOrderScreen() {
 
     const handleBuscarCliente = async () => {
         try {
-            const response = await axios.get('https://dev-core-invoice-service-q642kqwota-uc.a.run.app/clients/', {
+            const response = await axios.get(`https://dev-core-invoice-service-q642kqwota-uc.a.run.app/clients/document/?document_number=${searchField}`, {
                 headers: {
                     Accept: 'application/json',
                 },
@@ -437,9 +437,10 @@ export default function PlaceOrderScreen() {
 
             if (response.status === 200) {
                 const clients = response.data;
+                console.log(clients);
 
 
-                const foundClient = clients.find((client) => client.numero_documento === searchField);
+                const foundClient = clients;
 
                 if (foundClient) {
                     console.log('Found Client:', foundClient);
@@ -447,14 +448,15 @@ export default function PlaceOrderScreen() {
                     setClientId(foundClient.id);
                     console.log(client_id);
                 } else {
-                    console.log('Client not found');
+                    console.log('Cliente no registrado.');
 
                 }
 
             } else {
-                console.error('Failreed to fetch client data');
+
             }
         } catch (error) {
+            toast.error("Este cliente no está registrado.")
             console.error('Error fetching client data:', error);
         }
     };

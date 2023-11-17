@@ -16,16 +16,7 @@ export default function App({ children }) {
 
   return (
     <div>
-      <div
-        className={`${
-          loading
-            ? ''
-            : cartItems.length > 0 &&
-              (pathname === '/' || pathname.indexOf('/product/') >= 0)
-            ? 'mr-32'
-            : ''
-        }`}
-      >
+      <div>
         <Header />
         <main className="p-4">{children}</main>
       </div>
