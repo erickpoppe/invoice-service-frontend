@@ -596,8 +596,10 @@ export default function PlaceOrderScreen() {
                 }
             })
             .catch((error) => {
-                console.error('Error sending invoice:', error);
-                alert('An error occurred while sending the invoice. Please try again later.');
+                if (error.response.data.detail === "valid cufd for customer 1 not found") {
+                    alert(`NO SE ACTUALIZO EL CUFD!`);
+                }
+
             })
             .finally(() => {
                 setIsSubmitting(false);
