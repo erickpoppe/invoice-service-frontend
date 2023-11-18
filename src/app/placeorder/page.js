@@ -178,9 +178,10 @@ export default function PlaceOrderScreen() {
 
 
 
-    const handlePaymentMethodChange = (event) => {
+    const submitHandler = (event) => {
         const newValue = event.target.value;
         setSelectedPaymentMethod(newValue);
+        alert(`Metodo de pago: ${selectedPaymentMethod}`);sub
     };
 
     const handleImprimirFactura = (event) => {
@@ -196,10 +197,7 @@ export default function PlaceOrderScreen() {
             });
     };
 
-    const submitHandler = () => {
-        // Store the selected payment method in Redux
-        dispatch(savePaymentMethod(selectedPaymentMethod));
-    };
+
 
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('1');
     const [creditCardNumber, setCreditCardNumber] = useState(null);
@@ -417,6 +415,7 @@ export default function PlaceOrderScreen() {
         setCreditCardNumber(newValue);
         console.log(newValue);
         console.log(creditCardNumber);
+
     };
 
         const handleBuscarCliente = async () => {
@@ -639,14 +638,14 @@ export default function PlaceOrderScreen() {
                                 />
                             </div>
                             <button onClick={handleNombrePaciente} className="primary-button" >Registrar</button>
+                            <div>
+                                <b>Nombre del paciente:</b> <DataPatient nombre_paciente={nombre_paciente}></DataPatient>
+                            </div>
                         </div>
-                        <div>
-                            nombre_paciente
-                            <DataPatient nombre_paciente={nombre_paciente}></DataPatient>
-                        </div>
+
                         <div className="card  p-5">
                             <h2 className="mb-2 text-lg"><b>Método de Pago</b></h2>
-                            <div>{paymentMethod}</div>
+                            <div>{selectedPaymentMethod}</div>
                             <div>
                                 <div className="mb-3">
                                     <label htmlFor="paymentMethod" className="form-label">Tipo de método de pago</label>
@@ -654,7 +653,8 @@ export default function PlaceOrderScreen() {
                                         id="paymentMethod"
                                         className="form-select"
                                         value={selectedPaymentMethod}
-                                        onChange={handlePaymentMethodChange}
+                                        onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+
                                     >
                                         <option value="1">Efectivo</option>
                                         <option value="2">Tarjeta</option>
@@ -662,7 +662,24 @@ export default function PlaceOrderScreen() {
                                         <option value="10">Tarjeta y Efectivo</option>
                                     </select>
                                 </div>
-                                {selectedPaymentMethod === "2" || "10" && (
+                                { selectedPaymentMethod === "2" && (
+                                    <div className="mb-3">
+                                        <label htmlFor="creditCardNumber" className="form-label">Número de tarjeta de crédito </label>
+                                          <input
+                                            type="tel"
+                                            inputmode="numeric"
+                                            id="creditCardNumber"
+                                            pattern="[0-9\s]{13,19}"
+                                            autocomplete="cc-number"
+                                            maxlength="19"
+                                            placeholder="xxxx xxxx xxxx xxxx"
+                                            className="form-control"
+                                            value={creditCardNumber}
+                                            onChange={handleCreditCardChange}
+                                        />
+                                    </div>
+                                )}
+                                { selectedPaymentMethod === "10" && (
                                     <div className="mb-3">
                                         <label htmlFor="creditCardNumber" className="form-label">Número de tarjeta de crédito </label>
                                         <input
