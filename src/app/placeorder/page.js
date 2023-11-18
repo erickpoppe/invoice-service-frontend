@@ -189,7 +189,7 @@ export default function PlaceOrderScreen() {
                 saveAs(pdfBlob, filename);
             })
             .catch((error) => {
-                console.error('Error descargando el PDF :', error);
+                alert(`Error imprimiendo la factura: ${error}`);
             });
     };
 
@@ -546,7 +546,7 @@ export default function PlaceOrderScreen() {
         });
 
         const params = {
-            codigo_metodo_pago: paymentMethod,
+            codigo_metodo_pago: selectedPaymentMethod,
             monto_total: calculateDiscountedSubtotal(isAmountTotal, additionalDiscount),
             monto_total_sujeto_iva: calculateDiscountedSubtotal(isAmountTotal, additionalDiscount),
             codigo_moneda: 1,
