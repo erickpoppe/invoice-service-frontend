@@ -588,7 +588,7 @@ export default function PlaceOrderScreen() {
                     // Successfully sent the invoice
                     alert(response.data.status);
                     alert(`El número de factura es: ${response.data.invoice_number}`);
-                    alert(response.data.id);
+
 
                 } else {
                     // Handle the error
@@ -598,6 +598,9 @@ export default function PlaceOrderScreen() {
             .catch((error) => {
                 if (error.response.data.detail === "valid cufd for customer 1 not found") {
                     alert(`NO SE ACTUALIZO EL CUFD!`);
+                } else if (error.response.data.detail[0].msg === "Input should be a valid integer, unable to parse string as an integer") {
+                    alert(`NO HAY NINGÚN CLIENTE PARA PROCESAR LA FACTURA!`);
+
                 }
 
             })
