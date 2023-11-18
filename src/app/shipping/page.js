@@ -57,7 +57,10 @@ export default function ShippingAddressPage() {
       window.opener.postMessage({ payload, ide }, '*');
       window.close();
     } catch (error) {
-      alert(`Error registrando al nuevo cliente.`);
+      if (error.response.data.detail == "Client with document number already registered!") {
+        alert(`ESE NÚMERO DE DOCUMENTO DE CLIENTE YA FUE REGISTRADO.`)
+      }
+      console.log(error.response.data.detail);
       console.error('Error creating client:', error);
     }
   };
