@@ -178,11 +178,7 @@ export default function PlaceOrderScreen() {
 
 
 
-    const submitHandler = (event) => {
-        const newValue = event.target.value;
-        setSelectedPaymentMethod(newValue);
-        alert(`Metodo de pago: ${selectedPaymentMethod}`);sub
-    };
+
 
     const handleImprimirFactura = (event) => {
         const myUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/pdf?invoice_number=${invoicePrintNumber}&customer_id=1`;
@@ -696,7 +692,7 @@ export default function PlaceOrderScreen() {
                                         />
                                     </div>
                                 )}
-                                <button onClick={submitHandler} className="primary-button" >Registrar</button>
+
                             </div>
 
                         </div>
