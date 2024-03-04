@@ -19,7 +19,7 @@ export default function ShippingAddressPage() {
     const [invoicePrintNumber, setInvoicePrintNumber] = useState('');
 
     const handleImprimirFactura = (event) => {
-        const myUrl = `https://prod-core-invoice-service-4z5dz4d2yq-uc.a.run.app/invoices/pdf?invoice_number=${invoicePrintNumber}&customer_id=1&is_roll=1`;
+        const myUrl = `https://prod-core-invoice-service-4z5dz4d2yq-uc.a.run.app/invoices/pdf?invoice_number=${invoicePrintNumber}&customer_id=1&is_roll=${isRoll}`;
         axios.get(myUrl, { responseType: 'blob' })
             .then ((response) => {
                 const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
@@ -47,6 +47,13 @@ export default function ShippingAddressPage() {
                             className="border rounded p-1 ml-2"
                             placeholder="Número de la factura..."
                         />
+                    </div>
+                    <div>
+                        <label htmlFor="country">Tipo de factura  </label>
+                        <select id="is_roll" className="form-select" onChange={(e) => setIsRoll(e.target.value)}>
+                            <option value="0">Media hoja</option>
+                            <option value="1">Rollo</option>
+                        </select>
                     </div>
                 </ol>
                 <ul>
