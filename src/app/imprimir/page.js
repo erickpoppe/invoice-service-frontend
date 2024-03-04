@@ -14,11 +14,11 @@ import {error} from "next/dist/build/output/log";
 
 export default function ShippingAddressPage() {
 
-    const [invoiceNumber, setInvoiceNumber] = useState('');
+    const [isRoll, setIsRoll] = useState(null);
     const [invoicePrintNumber, setInvoicePrintNumber] = useState('');
 
     const handleImprimirFactura = (event) => {
-        const myUrl = `https://dev-core-invoice-service-q642kqwota-uc.a.run.app/invoices/pdf?invoice_number=${invoicePrintNumber}&customer_id=1`;
+        const myUrl = `https://prod-core-invoice-service-4z5dz4d2yq-uc.a.run.app/invoices/pdf?invoice_number=${invoicePrintNumber}&customer_id=1&is_roll=1`;
         axios.get(myUrl, { responseType: 'blob' })
             .then ((response) => {
                 const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
