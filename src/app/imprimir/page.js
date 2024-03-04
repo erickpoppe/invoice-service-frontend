@@ -15,7 +15,7 @@ import { saveAs } from 'file-saver';
 
 export default function ShippingAddressPage() {
 
-    const [isRoll, setIsRoll] = useState(null);
+    const [isRoll, setIsRoll] = useState(0);
     const [invoicePrintNumber, setInvoicePrintNumber] = useState('');
 
     const handleImprimirFactura = (event) => {
