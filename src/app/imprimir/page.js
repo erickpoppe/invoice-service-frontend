@@ -50,7 +50,7 @@ export default function ShippingAddressPage() {
                 </ol>
                 <ul>
                     <div className="mb-2 flex justify-between">
-                        <button onClick={handleImprimirFactura} className="primary-button w-full">
+                        <button onClick={handleImprimirFactura} className="primary-button">
                             Imprimir Factura
                         </button>
                     </div>
