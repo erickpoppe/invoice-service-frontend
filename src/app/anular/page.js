@@ -16,9 +16,9 @@ import { saveAs } from 'file-saver';
 export default function ShippingAddressPage() {
 
     const [isRoll, setIsRoll] = useState(1);
-    const [invoicePrintNumber, setInvoicePrintNumber] = useState('');
-    const [invoiceBranchNumber, setInvoiceBranchNumber] = useState();
-    const [invoicePosNumber, setInvoicePosNumber] = useState();
+    const [invoicePrintNumber, setInvoicePrintNumber] = useState();
+    const [invoiceBranchNumber, setInvoiceBranchNumber] = useState(1);
+    const [invoicePosNumber, setInvoicePosNumber] = useState(1);
 
     const handleAnularFactura = (event) => {
         const myUrl = `https://prod-core-invoice-service-4z5dz4d2yq-uc.a.run.app/invoices/emit/number/?invoice_number=${invoicePrintNumber}&codigo_motivo=${isRoll}&customer_id=1&branch_id=${invoiceBranchNumber}&pos_id=&{invoicePosNumber}`;
@@ -45,7 +45,6 @@ export default function ShippingAddressPage() {
                             value={invoicePrintNumber}
                             onChange={(e) => setInvoicePrintNumber(e.target.value)}
                             className="border rounded p-1 ml-2"
-                            placeholder="Número de la factura..."
                         />
                     </div>
                     <div className="flex items-center">
