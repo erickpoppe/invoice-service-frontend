@@ -31,11 +31,23 @@ export default function ShippingAddressPage() {
        return branchNumberMap[value] || 1;
       
     };
+    
+    const translatePosNumber = (value) => {
+        const posNumberMap = {
+            '4': 1,
+            '5': 2,
+        };
+      
+       return posNumberMap[value] || 1;
+      
+    };
 
     const handleAnularFactura = (event) => {
         const translatedBranchNumber = translateBranchNumber(invoiceBranchNumber);
+ 
+        const translatedPosNumber = translatePosNumber(invoicePosNumber);
        
-        const myUrl = `https://prod-core-invoice-service-4z5dz4d2yq-uc.a.run.app/invoices/emit/number/?invoice_number=${invoicePrintNumber}&codigo_motivo=${isRoll}&customer_id=1&branch_id=${translatedBranchNumber}&pos_id=${invoicePosNumber}`;
+        const myUrl = `https://prod-core-invoice-service-4z5dz4d2yq-uc.a.run.app/invoices/emit/number/?invoice_number=${invoicePrintNumber}&codigo_motivo=${isRoll}&customer_id=1&branch_id=${translatedBranchNumber}&pos_id=${translatedPosNumber}`;
         axios.delete(myUrl, { headers: { 'Accept': 'application/json' } })
             .then ((response) => {
                 if(response.status == 200) { 
