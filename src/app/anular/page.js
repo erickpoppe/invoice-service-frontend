@@ -17,8 +17,8 @@ export default function ShippingAddressPage() {
 
     const [isRoll, setIsRoll] = useState(1);
     const [invoicePrintNumber, setInvoicePrintNumber] = useState('');
-    const [invoiceBranchNumber, setInvoiceBranchNumber] = useState('');
-    const [invoicePosNumber, setInvoicePosNumber] = useState('');
+    const [invoiceBranchNumber, setInvoiceBranchNumber] = useState(null);
+    const [invoicePosNumber, setInvoicePosNumber] = useState(null);
 
     const handleAnularFactura = (event) => {
         const myUrl = `https://prod-core-invoice-service-4z5dz4d2yq-uc.a.run.app/invoices/emit/number/?invoice_number=${invoicePrintNumber}&codigo_motivo=${isRoll}&customer_id=1&branch_id=${invoiceBranchNumber}&pos_id=&{invoicePosNumber}`;
