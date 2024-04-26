@@ -20,8 +20,22 @@ export default function ShippingAddressPage() {
     const [invoiceBranchNumber, setInvoiceBranchNumber] = useState(1);
     const [invoicePosNumber, setInvoicePosNumber] = useState(1);
 
+    const translateBranchNumber = (value) => {
+        const branchNumberMap = {
+            '0': 1,
+            '1': 2,
+            '2': 3,
+            '3': 4
+        };
+      
+       return branchNumberMap[value] || 1;
+      
+    };
+
     const handleAnularFactura = (event) => {
-        const myUrl = `https://prod-core-invoice-service-4z5dz4d2yq-uc.a.run.app/invoices/emit/number/?invoice_number=${invoicePrintNumber}&codigo_motivo=${isRoll}&customer_id=1&branch_id=${invoiceBranchNumber}&pos_id=${invoicePosNumber}`;
+        const translatedBranchNumber = translateBranchNumber(invoiceBranchNumber);
+       
+        const myUrl = `https://prod-core-invoice-service-4z5dz4d2yq-uc.a.run.app/invoices/emit/number/?invoice_number=${invoicePrintNumber}&codigo_motivo=${isRoll}&customer_id=1&branch_id=${translatedBranchNumber}&pos_id=${invoicePosNumber}`;
         axios.delete(myUrl, { headers: { 'Accept': 'application/json' } })
             .then ((response) => {
                 if(response.status == 200) { 
