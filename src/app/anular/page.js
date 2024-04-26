@@ -52,7 +52,7 @@ export default function ShippingAddressPage() {
                         <div>Sucursal : </div>
                         <input
                             type="number"
-                            value={invoicePrintNumber}
+                            value={invoiceBranchNumber}
                             onChange={(e) => setInvoiceBranchNumber(e.target.value)}
                             className="border rounded p-1 ml-2"
                             placeholder="Sucursal..."
@@ -62,7 +62,7 @@ export default function ShippingAddressPage() {
                        <div>Punto de venta: </div>
                         <input
                             type="number"
-                            value={invoicePrintNumber}
+                            value={invoicePosNumber}
                             onChange={(e) => setInvoicePosNumber(e.target.value)}
                             className="border rounded p-1 ml-2"
                         osplaceholder="Punto de venta..."
