@@ -31,11 +31,7 @@ export default function ShippingAddressPage() {
                 }
             })
             .catch((error) => {
-                if (${error.response.data.detail} == "Unauthorized") {
-                    alert('No existe ese número de punto de venta para esa sucursal');
-                } else {
                 alert(`Error: ${error.response.data.detail}`);
-                }
             });
     };
 
