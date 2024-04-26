@@ -31,7 +31,7 @@ export default function ShippingAddressPage() {
                 }
             })
             .catch((error) => {
-                if (${error.response.data.detail} == 'Unauthorized') {
+                if (${error.response.data.detail} == Unauthorized) {
                     alert('No existe ese número de punto de venta para esa sucursal');
                 } else {
                 alert(`Error anulando la factura: ${error.response.data.detail}`);
