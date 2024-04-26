@@ -31,7 +31,7 @@ export default function ShippingAddressPage() {
                 }
             })
             .catch((error) => {
-                alert(`Error anulando la factura: ${error}`);
+                alert(`Error anulando la factura: ${error.response.data.detail}`);
             });
     };
 
