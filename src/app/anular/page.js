@@ -24,7 +24,11 @@ export default function ShippingAddressPage() {
         const myUrl = `https://prod-core-invoice-service-4z5dz4d2yq-uc.a.run.app/invoices/emit/number/?invoice_number=${invoicePrintNumber}&codigo_motivo=${isRoll}&customer_id=1&branch_id=${invoiceBranchNumber}&pos_id=${invoicePosNumber}`;
         axios.delete(myUrl, { headers: { 'Accept': 'application/json' } })
             .then ((response) => {
-                console.log(response);
+                if(response.status == 200) { 
+                   alert('Factura anulada exitosamente.');
+                } else {
+                   console.log(response);  
+                }
             })
             .catch((error) => {
                 alert(`Error anulando la factura: ${error}`);
