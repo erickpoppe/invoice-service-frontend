@@ -57,7 +57,11 @@ export default function ShippingAddressPage() {
                 }
             })
             .catch((error) => {
-                alert(`Error: ${error.response.data.detail}`);
+                if (error.response && error.response.data && error.response.data.detail) {
+                    toast.error(`Error anulando la factura: ${error.response.data.detail}`);
+                } else {
+                    toast.error(`Error: ${error}`);
+                }
             });
     };
 
