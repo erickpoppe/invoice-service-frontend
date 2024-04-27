@@ -12,6 +12,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {error} from "next/dist/build/output/log";
 import { saveAs } from 'file-saver';
+import { toast } from 'react-toastify';
+
 
 export default function ShippingAddressPage() {
 
