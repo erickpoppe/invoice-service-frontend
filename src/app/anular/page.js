@@ -81,7 +81,14 @@ export default function ShippingAddressPage() {
             })
             .catch((error) => {
                 if (error.response && error.response.data && error.response.data.detail) {
-                    toast.error(`Error: ${error.response.data.detail}`);
+                    if (error.response.data.detail == "Unauthorized" ){  
+                        toast.error("Punto de venta inexistente para sucursal escogida.");
+                    } else { 
+                        toast.error(`Error: ${error.response.data.detail}`);
+
+                    }
+
+                   
                 } else {
                     toast.error(`Error: ${error}`);
                 }
