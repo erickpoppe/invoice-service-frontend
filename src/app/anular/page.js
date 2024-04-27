@@ -69,6 +69,7 @@ export default function ShippingAddressPage() {
 
     return (
         <div className="card  p-5">
+            <ToastContainer />
             <div className="mb-3">
                 <h2 className="mb-2 text-lg"><b>Anular Factura</b></h2>
                 <ol>
