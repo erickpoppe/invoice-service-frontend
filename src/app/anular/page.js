@@ -33,20 +33,42 @@ export default function ShippingAddressPage() {
       
     };
     
-    const translatePosNumber = (value) => {
+    const translatePosNumber = (value, branchNumber) => {
+        
         const posNumberMap = {
-            '4': 1,
-            '5': 2,
+
+            '1': {
+
+                '4': 1,
+                '5': 2,
+            },
+
+            '2': {
+                '2': 4,
+                '3': 5,
+                '4': 6,
+            },
+        
+            '3': {
+                '1': 7,
+                '2': 8,
+                '3': 9,
+            },
+            
+            '4': {
+                '1': 9,
+            }
         };
-      
-       return posNumberMap[value] || 1;
+         
+       const translatedValue = posNumberMap[branchNumber]?.[value] || 1;
+       return translatedValue;
       
     };
 
     const handleAnularFactura = (event) => {
         const translatedBranchNumber = translateBranchNumber(invoiceBranchNumber);
  
-        const translatedPosNumber = translatePosNumber(invoicePosNumber);
+        const translatedPosNumber = translatePosNumber(invoicePosNumber, translatedBranchNumber);
        
         const myUrl = `https://prod-core-invoice-service-4z5dz4d2yq-uc.a.run.app/invoices/emit/number/?invoice_number=${invoicePrintNumber}&codigo_motivo=${isRoll}&customer_id=1&branch_id=${translatedBranchNumber}&pos_id=${translatedPosNumber}`;
         axios.delete(myUrl, { headers: { 'Accept': 'application/json' } })
@@ -59,7 +81,7 @@ export default function ShippingAddressPage() {
             })
             .catch((error) => {
                 if (error.response && error.response.data && error.response.data.detail) {
-                    toast.error(`Error anulando la factura: ${error.response.data.detail}`);
+                    toast.error(`Error: ${error.response.data.detail}`);
                 } else {
                     toast.error(`Error: ${error}`);
                 }
