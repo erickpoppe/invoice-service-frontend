@@ -53,9 +53,9 @@ export default function ShippingAddressPage() {
         axios.delete(myUrl, { headers: { 'Accept': 'application/json' } })
             .then ((response) => {
                 if(response.status == 200) { 
-                   alert('Factura anulada exitosamente.');
+                    toast.success('Factura anulada exitosamente.');
                 } else {
-                   console.log(response);  
+                    console.log(response);  
                 }
             })
             .catch((error) => {
